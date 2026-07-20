@@ -1,0 +1,16 @@
+{
+  "config_hash": "dc84615038552ae05ac5d9070576c8219279ea624a7963acb6d14d4b7722d7db",
+  "created_at": "2026-07-20T04:24:06.104203+00:00",
+  "input_hash": "78c2f47cc0cf45243aeaf4e52b1699d5f7a2a2814a7e447317f0cbda5ecdc6eb",
+  "run_id": "benchmark-plan",
+  "stages": {
+    "gate-0": {
+      "artifact": "gate-0.json",
+      "status": "passed",
+      "updated_at": "2026-07-20T04:24:38.620741+00:00"
+    }
+  },
+  "status": "completed",
+  "task_hash": "16aaf76acb8e25a4a6257cf6fd911dafbca3006482dac44259f81254767fb002",
+  "updated_at": "2026-07-20T04:24:38.622950+00:00"
+}

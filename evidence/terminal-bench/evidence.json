@@ -1,0 +1,42 @@
+{
+  "attempt": 1,
+  "codex_log": "jobs/run/fix-git__3aycCKX/agent/codex.txt",
+  "contract": "run-contract.json",
+  "harness": "harbor",
+  "result": "jobs/run/fix-git__3aycCKX/result.json",
+  "ri_runs": [
+    {
+      "ledger": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-final/ledger.json",
+      "manifest": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-final/manifest.json",
+      "run_id": "benchmark-final"
+    },
+    {
+      "ledger": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-fuse/ledger.json",
+      "manifest": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-fuse/manifest.json",
+      "run_id": "benchmark-fuse"
+    },
+    {
+      "ledger": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-plan/ledger.json",
+      "manifest": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-plan/manifest.json",
+      "run_id": "benchmark-plan"
+    },
+    {
+      "ledger": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-post-execution/ledger.json",
+      "manifest": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-post-execution/manifest.json",
+      "run_id": "benchmark-post-execution"
+    },
+    {
+      "ledger": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-pre-execution/ledger.json",
+      "manifest": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-pre-execution/manifest.json",
+      "run_id": "benchmark-pre-execution"
+    },
+    {
+      "ledger": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-summarize/ledger.json",
+      "manifest": "jobs/run/fix-git__3aycCKX/agent/relentless-inception/runs/benchmark-summarize/manifest.json",
+      "run_id": "benchmark-summarize"
+    }
+  ],
+  "schema_version": 1,
+  "task": "fix-git",
+  "trajectory": "jobs/run/fix-git__3aycCKX/agent/trajectory.json"
+}

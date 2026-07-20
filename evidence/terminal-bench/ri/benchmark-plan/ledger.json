@@ -1,0 +1,96 @@
+{
+  "accounting_failure": null,
+  "attempt_entries": [
+    {
+      "attempt_id": "2e97aa7ed197fe04b3f3285fcad5c6f15dbfb9f314994396b27c80ff734ce947",
+      "attempt_index": 0,
+      "invocation_sha256": "7763f1879447083a60814c70ed3b05972f50b10b6beea0d9586047ce0a947032",
+      "seat": "grok43_constraint_auditor",
+      "stage": "gate"
+    },
+    {
+      "attempt_id": "9ead8c173524a555fd68e9fd8aeb6d106d4cd14637972c9d5988a1bdad681f97",
+      "attempt_index": 1,
+      "invocation_sha256": "a24272e438112a790a2a5167ff81a898c2707096d9afc40f2fc29d66d534826e",
+      "seat": "grok45_verifier",
+      "stage": "gate"
+    }
+  ],
+  "attempts": 2,
+  "cached_tokens": 256,
+  "calls": 2,
+  "entries": [
+    {
+      "actual_model": "grok-4.3",
+      "attempt_id": "2e97aa7ed197fe04b3f3285fcad5c6f15dbfb9f314994396b27c80ff734ce947",
+      "attempt_index": 0,
+      "entry_id": "88c5de66bdc0ee5fe85eaf06b25b005614c63d9378719bfc860abd722a6537a1",
+      "invocation_sha256": "7763f1879447083a60814c70ed3b05972f50b10b6beea0d9586047ce0a947032",
+      "latency_seconds": 13.980505715000618,
+      "provider": "xai_direct",
+      "raw_status": "completed",
+      "request_id": "9a4f2295-4e4a-94fc-8f38-ae21f33efa4f",
+      "requested_model": "grok-4.3",
+      "response_artifact": "responses/88c5de66bdc0ee5fe85eaf06b25b005614c63d9378719bfc860abd722a6537a1.json",
+      "response_sha256": "b9874e75146104b809e453c0e387629a5343b66b0973c64ad5db221e2e37fbef",
+      "route": {},
+      "seat": "grok43_constraint_auditor",
+      "stage": "gate",
+      "usage": {
+        "accounting_error": null,
+        "cached_tokens": 128,
+        "cost_usd": 0.0117481,
+        "input_output_usage_complete": true,
+        "input_tokens": 6766,
+        "output_tokens": 1370,
+        "raw_usage_invalid": false,
+        "reasoning_tokens": 869,
+        "tool_calls": 0,
+        "unknown_cost_fail_closed": false
+      }
+    },
+    {
+      "actual_model": "grok-4.5",
+      "attempt_id": "9ead8c173524a555fd68e9fd8aeb6d106d4cd14637972c9d5988a1bdad681f97",
+      "attempt_index": 1,
+      "entry_id": "e70f7e42b1246942e3c268f5aa3719cac645511d91c1c0e23b8c1d908b5cbd46",
+      "invocation_sha256": "a24272e438112a790a2a5167ff81a898c2707096d9afc40f2fc29d66d534826e",
+      "latency_seconds": 32.52395480699852,
+      "provider": "xai_direct",
+      "raw_status": "completed",
+      "request_id": "d8e3c9f8-7bd9-9a1c-95e5-40a689aea858",
+      "requested_model": "grok-4.5",
+      "response_artifact": "responses/e70f7e42b1246942e3c268f5aa3719cac645511d91c1c0e23b8c1d908b5cbd46.json",
+      "response_sha256": "053b989a1672fac3544856cc846689b57b274952424becddb89cdd5767a1572b",
+      "route": {},
+      "seat": "grok45_verifier",
+      "stage": "gate",
+      "usage": {
+        "accounting_error": null,
+        "cached_tokens": 128,
+        "cost_usd": 0.0281664,
+        "input_output_usage_complete": true,
+        "input_tokens": 7457,
+        "output_tokens": 2245,
+        "raw_usage_invalid": false,
+        "reasoning_tokens": 1548,
+        "tool_calls": 0,
+        "unknown_cost_fail_closed": false
+      }
+    }
+  ],
+  "input_tokens": 14223,
+  "known_cost_usd": 0.0399145,
+  "output_tokens": 3615,
+  "provider_cost_usd": {
+    "xai_direct": 0.0399145
+  },
+  "reasoning_tokens": 2417,
+  "schema_version": 3,
+  "stop_reason": null,
+  "tool_calls": 0,
+  "total_tokens": 17838,
+  "unknown_cost_calls": 0,
+  "wall_seconds": 32.54212168099912,
+  "warnings": []
+}

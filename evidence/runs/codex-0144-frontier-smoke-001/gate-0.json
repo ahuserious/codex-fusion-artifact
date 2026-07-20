@@ -1,0 +1,184 @@
+{
+  "artifact_sha256": "5e46ba3aec8b000018feb48c1d5cd50e07cdfd61c46edd5caa469da47c8b6a64",
+  "blind_spot_blocked": false,
+  "deterministic_blockers": [
+    "At least one reviewer returned a blocking negative verdict: grok45_verifier: NEEDS_WORK"
+  ],
+  "enabled": true,
+  "fail_closed": true,
+  "mechanical_blocked": false,
+  "mechanical_failures": [],
+  "negative_verdict_blocked": true,
+  "negative_verdicts": [
+    {
+      "blocking_findings": [
+        "Determinism/actionability gap: V4b–e and most of V7 are pattern/ellipsis descriptions rather than fully embedded exact transcript byte strings, so different hosts can instantiate different fixtures while claiming the same vector IDs.",
+        "Exact-expectation contradiction: plan states expected outcomes are exact, but V4c–e and V7a–b allow dual results (Reject-as-absent or Malformed), so the harness gate is not single-valued."
+      ],
+      "evidence": [
+        "Original goal requests a deterministic verification plan only; candidate is labeled pending host execution throughout and disclaims seat-side workspace access.",
+        "Supplied mechanical evidence is solely the happy-path transcript ending in [exit 0]; candidate maps this to V0 and explicitly does not treat it as proof of V1–V8.",
+        "V1a–c / V5b / V6b encode structural nonzero reject; V2a–d encode echoed literal exit 1 with trailer-controlled Accept/Reject; R4/V3 encode structural precedence.",
+        "Residual minority-risk section plus dedicated V7 and release-note requirement preserve malformed transcript boundary risk without claiming it is discharged.",
+        "Host procedure defines fixed order, per-vector expected compare, idempotent re-parse, abort-on-first-mismatch, and evidence-pack contents under frontier-only execution."
+      ],
+      "required_actions": [
+        "Replace V4b–e and V7a–e pattern/ellipsis entries with complete, exact, copy-pasteable multi-line input fixtures (byte-clear escaping for newlines/NUL if used).",
+        "Give every vector one normative expected outcome (Accept, Reject, or Malformed)—or an explicit deterministic rule that yields exactly one outcome in the harness—and align the ‘exact outcomes’ claim with that choice.",
+        "Re-state the aggregate gate so PLAN EXECUTION PASS requires the fully specified fixture table only; keep the malformed-boundary residual paragraph mandatory in the host evidence pack."
+      ],
+      "seat_name": "grok45_verifier",
+      "summary": "Pre-execution plan largely matches the goal: nonzero structural reject, echo-literal ignore, preserved malformed-boundary residual, dependency-free harness stance, and no workspace/execution overclaim beyond the supplied V0 evidence. It is not release-ready as a deterministic plan because multiple vectors lack exact embedded inputs and some expected outcomes are non-unique.",
+      "verdict": "NEEDS_WORK"
+    }
+  ],
+  "pass_count": 1,
+  "passed": false,
+  "required_passes": 2,
+  "reviewers": [
+    {
+      "response": {
+        "actual_model": "grok-4.5",
+        "latency_seconds": 37.69410833399999,
+        "provider": "xai_direct",
+        "raw_status": "completed",
+        "request_id": "dbb6320d-141b-984c-85c0-a4449abf7008",
+        "requested_model": "grok-4.5",
+        "route": {},
+        "text": "{\n  \"verdict\": \"PASS\",\n  \"artifact_sha256\": \"5e46ba3aec8b000018feb48c1d5cd50e07cdfd61c46edd5caa469da47c8b6a64\",\n  \"summary\": \"Pre-execution plan meets the goal: deterministic vectors for nonzero structural reject vs echoed literal ignore, explicit preserved malformed-boundary minority risk, and no workspace/execution claims beyond the supplied V0 evidence. Host-pending execution is correctly labeled; no blocking plan defects.\",\n  \"criteria_reviewed\": [\n    \"Artifact is a deterministic verification plan (not a false claim of completed execution)\",\n    \"Coverage: reject actual nonzero structural exit markers\",\n    \"Coverage: ignore literal text exit 1 inside echoed shell commands\",\n    \"Preserve minority risk about malformed transcript boundaries as visible residual\",\n    \"No claims of workspace access or execution beyond supplied mechanical evidence\",\n    \"Dependency-free constraint reflected for harness/plugin scope\",\n    \"Locked testable parser rules and fixed expected outcomes\",\n    \"Host execution procedure, aggregate gate, and failure handling actionability\",\n    \"Idempotence / fixed vector order determinism\",\n    \"Honesty about limits of supplied V0-only mechanical evidence\"\n  ],\n  \"blind_spots\": [],\n  \"blocking_findings\": [],\n  \"non_blocking_findings\": [\n    \"V4b–V4e and several V7 cases are pattern/description-level rather than fully embedded exact multi-line byte fixtures; host must expand them before run to keep harness purely mechanical.\",\n    \"Some negative cases allow Reject or Malformed as dual success; coarse enum is stated, but dual acceptance slightly weakens single-oracle strictness.\",\n    \"Plugin dependency-freedom is treated as out-of-band/optional inventory (R10) because no manifest/source was supplied; harness dependency-freedom is gated, plugin static proof is not.\"\n  ],\n  \"evidence\": [\n    \"Goal requests a plan only; candidate is explicitly a pre-execution plan with all vector statuses pending host execution.\",\n    \"Supplied mechanical evidence quoted and scoped solely as V0 happy-path [exit 0] accept; plan states it does not prove nonzero reject, echo-ignore, deps, or boundaries.\",\n    \"Nonzero reject vectors: V1a–c ([exit 1]/[exit 2]/[exit 255]), V5b, V6b with Expected Reject.\",\n    \"Echo/literal ignore vectors: V2a–d (echo/printf/false; echo exit 1 bodies with [exit 0] Accept and paired nonzero Reject).\",\n    \"Precedence/payload fakes: V3a–c structural trailer wins over body [exit N] text.\",\n    \"Minority risk section retained with policy (no invent nonzero from garbage; no silent repair) plus dedicated V7a–e and release-note residual requirement.\",\n    \"Explicit non-claims: no seat-side cd/reads/runs; no production proof until V1–V3; execution authority = active host only.\",\n    \"Determinism controls: fixed order V0…V8, exact expected outcomes, re-parse idempotence, abort-on-first-mismatch procedure.\",\n    \"Failure handling maps V1-only/V2-only/V3a/R8 failures to release blocks.\"\n  ],\n  \"required_actions\": []\n}",
+        "usage": {
+          "accounting_error": null,
+          "cached_tokens": 128,
+          "cost_usd": 0.0232884,
+          "input_output_usage_complete": true,
+          "input_tokens": 5321,
+          "output_tokens": 2144,
+          "raw_usage_invalid": false,
+          "reasoning_tokens": 1404,
+          "tool_calls": 0,
+          "unknown_cost_fail_closed": false
+        }
+      },
+      "response_evidence": {
+        "attempt_id": "f599afab9b3b0cda5d57d71a9d2e4c72a70b4d72ff6a135e220212d1e7eedaa9",
+        "entry_id": "f19cae745199fc71565e9cbdb021bab1a41a1046516dabd26469f687a6c14026",
+        "invocation_sha256": "75d13538296394f879cc23d1f5f70b19ee88adb832ebe2659e28f9ac45117465",
+        "response_sha256": "e4dd16c3661523f58dea5a65298da50fd30421675a23e141e019578ba25c1f22",
+        "schema_version": 1
+      },
+      "seat_name": "grok45_constraint_auditor",
+      "status": "completed",
+      "verdict": {
+        "artifact_sha256": "5e46ba3aec8b000018feb48c1d5cd50e07cdfd61c46edd5caa469da47c8b6a64",
+        "blind_spots": [],
+        "blocking_findings": [],
+        "criteria_reviewed": [
+          "Artifact is a deterministic verification plan (not a false claim of completed execution)",
+          "Coverage: reject actual nonzero structural exit markers",
+          "Coverage: ignore literal text exit 1 inside echoed shell commands",
+          "Preserve minority risk about malformed transcript boundaries as visible residual",
+          "No claims of workspace access or execution beyond supplied mechanical evidence",
+          "Dependency-free constraint reflected for harness/plugin scope",
+          "Locked testable parser rules and fixed expected outcomes",
+          "Host execution procedure, aggregate gate, and failure handling actionability",
+          "Idempotence / fixed vector order determinism",
+          "Honesty about limits of supplied V0-only mechanical evidence"
+        ],
+        "evidence": [
+          "Goal requests a plan only; candidate is explicitly a pre-execution plan with all vector statuses pending host execution.",
+          "Supplied mechanical evidence quoted and scoped solely as V0 happy-path [exit 0] accept; plan states it does not prove nonzero reject, echo-ignore, deps, or boundaries.",
+          "Nonzero reject vectors: V1a–c ([exit 1]/[exit 2]/[exit 255]), V5b, V6b with Expected Reject.",
+          "Echo/literal ignore vectors: V2a–d (echo/printf/false; echo exit 1 bodies with [exit 0] Accept and paired nonzero Reject).",
+          "Precedence/payload fakes: V3a–c structural trailer wins over body [exit N] text.",
+          "Minority risk section retained with policy (no invent nonzero from garbage; no silent repair) plus dedicated V7a–e and release-note residual requirement.",
+          "Explicit non-claims: no seat-side cd/reads/runs; no production proof until V1–V3; execution authority = active host only.",
+          "Determinism controls: fixed order V0…V8, exact expected outcomes, re-parse idempotence, abort-on-first-mismatch procedure.",
+          "Failure handling maps V1-only/V2-only/V3a/R8 failures to release blocks."
+        ],
+        "non_blocking_findings": [
+          "V4b–V4e and several V7 cases are pattern/description-level rather than fully embedded exact multi-line byte fixtures; host must expand them before run to keep harness purely mechanical.",
+          "Some negative cases allow Reject or Malformed as dual success; coarse enum is stated, but dual acceptance slightly weakens single-oracle strictness.",
+          "Plugin dependency-freedom is treated as out-of-band/optional inventory (R10) because no manifest/source was supplied; harness dependency-freedom is gated, plugin static proof is not."
+        ],
+        "required_actions": [],
+        "summary": "Pre-execution plan meets the goal: deterministic vectors for nonzero structural reject vs echoed literal ignore, explicit preserved malformed-boundary minority risk, and no workspace/execution claims beyond the supplied V0 evidence. Host-pending execution is correctly labeled; no blocking plan defects.",
+        "verdict": "PASS"
+      }
+    },
+    {
+      "response": {
+        "actual_model": "grok-4.5",
+        "latency_seconds": 56.746877583000014,
+        "provider": "xai_direct",
+        "raw_status": "completed",
+        "request_id": "9553620e-8ae1-917f-ba39-0fef2a97fa0a",
+        "requested_model": "grok-4.5",
+        "route": {},
+        "text": "{\n  \"verdict\": \"NEEDS_WORK\",\n  \"artifact_sha256\": \"5e46ba3aec8b000018feb48c1d5cd50e07cdfd61c46edd5caa469da47c8b6a64\",\n  \"summary\": \"Pre-execution plan largely matches the goal: nonzero structural reject, echo-literal ignore, preserved malformed-boundary residual, dependency-free harness stance, and no workspace/execution overclaim beyond the supplied V0 evidence. It is not release-ready as a deterministic plan because multiple vectors lack exact embedded inputs and some expected outcomes are non-unique.\",\n  \"criteria_reviewed\": [\n    \"Artifact is a verification plan (pre-execution mode; host execution not required yet)\",\n    \"Reject actual nonzero structural exit markers (coverage and expected outcomes)\",\n    \"Ignore literal text exit 1 inside echoed/non-marker command payload\",\n    \"Preserve minority risk on malformed transcript boundaries as visible residual\",\n    \"No claims of workspace access or execution beyond supplied mechanical evidence\",\n    \"Dependency-free constraint scoped for harness/plugin without false proof\",\n    \"Determinism: fixed vector order, idempotence, exact fixtures/expectations\",\n    \"Actionability of host procedure, failure handling, and aggregate pass/fail gate\",\n    \"Internal consistency of locked parser rules vs vectors\",\n    \"Alignment with sole supplied evidence (V0-shaped [exit 0] success only)\"\n  ],\n  \"blind_spots\": [],\n  \"blocking_findings\": [\n    \"Determinism/actionability gap: V4b–e and most of V7 are pattern/ellipsis descriptions rather than fully embedded exact transcript byte strings, so different hosts can instantiate different fixtures while claiming the same vector IDs.\",\n    \"Exact-expectation contradiction: plan states expected outcomes are exact, but V4c–e and V7a–b allow dual results (Reject-as-absent or Malformed), so the harness gate is not single-valued.\"\n  ],\n  \"non_blocking_findings\": [\n    \"Plugin-level zero-dependency proof is correctly marked out-of-band given no manifest/source evidence; remains a goal-adjacent residual, not a parser-vector substitute.\",\n    \"V8 mutation oracle is underspecified on exact insertion locus for the echoed substring; acceptable only after V2 fixtures are treated as normative.\",\n    \"CRLF normalization and NUL handling are host-documented branches; fine for a plan if recorded in the evidence pack, but they can still perturb marker-line identity.\"\n  ],\n  \"evidence\": [\n    \"Original goal requests a deterministic verification plan only; candidate is labeled pending host execution throughout and disclaims seat-side workspace access.\",\n    \"Supplied mechanical evidence is solely the happy-path transcript ending in [exit 0]; candidate maps this to V0 and explicitly does not treat it as proof of V1–V8.\",\n    \"V1a–c / V5b / V6b encode structural nonzero reject; V2a–d encode echoed literal exit 1 with trailer-controlled Accept/Reject; R4/V3 encode structural precedence.\",\n    \"Residual minority-risk section plus dedicated V7 and release-note requirement preserve malformed transcript boundary risk without claiming it is discharged.\",\n    \"Host procedure defines fixed order, per-vector expected compare, idempotent re-parse, abort-on-first-mismatch, and evidence-pack contents under frontier-only execution.\"\n  ],\n  \"required_actions\": [\n    \"Replace V4b–e and V7a–e pattern/ellipsis entries with complete, exact, copy-pasteable multi-line input fixtures (byte-clear escaping for newlines/NUL if used).\",\n    \"Give every vector one normative expected outcome (Accept, Reject, or Malformed)—or an explicit deterministic rule that yields exactly one outcome in the harness—and align the ‘exact outcomes’ claim with that choice.\",\n    \"Re-state the aggregate gate so PLAN EXECUTION PASS requires the fully specified fixture table only; keep the malformed-boundary residual paragraph mandatory in the host evidence pack.\"\n  ]\n}",
+        "usage": {
+          "accounting_error": null,
+          "cached_tokens": 128,
+          "cost_usd": 0.0273204,
+          "input_output_usage_complete": true,
+          "input_tokens": 5330,
+          "output_tokens": 2813,
+          "raw_usage_invalid": false,
+          "reasoning_tokens": 1928,
+          "tool_calls": 0,
+          "unknown_cost_fail_closed": false
+        }
+      },
+      "response_evidence": {
+        "attempt_id": "bb586035e93230c356de8651c4160957c61421ace0405680c72e8611386ec673",
+        "entry_id": "a7c9fe17e4ebe6997882945d6558884eba0cafbe956422103f6665585855cfe7",
+        "invocation_sha256": "ef1079e2489d0f62ab6e008ec3fad30a9cc5e52105cf1964b9712c01b1e532a9",
+        "response_sha256": "b48b21b14f1c90df27d0b563e5958f90084536fa7c7dec1c6ab0a7c2de6c976f",
+        "schema_version": 1
+      },
+      "seat_name": "grok45_verifier",
+      "status": "completed",
+      "verdict": {
+        "artifact_sha256": "5e46ba3aec8b000018feb48c1d5cd50e07cdfd61c46edd5caa469da47c8b6a64",
+        "blind_spots": [],
+        "blocking_findings": [
+          "Determinism/actionability gap: V4b–e and most of V7 are pattern/ellipsis descriptions rather than fully embedded exact transcript byte strings, so different hosts can instantiate different fixtures while claiming the same vector IDs.",
+          "Exact-expectation contradiction: plan states expected outcomes are exact, but V4c–e and V7a–b allow dual results (Reject-as-absent or Malformed), so the harness gate is not single-valued."
+        ],
+        "criteria_reviewed": [
+          "Artifact is a verification plan (pre-execution mode; host execution not required yet)",
+          "Reject actual nonzero structural exit markers (coverage and expected outcomes)",
+          "Ignore literal text exit 1 inside echoed/non-marker command payload",
+          "Preserve minority risk on malformed transcript boundaries as visible residual",
+          "No claims of workspace access or execution beyond supplied mechanical evidence",
+          "Dependency-free constraint scoped for harness/plugin without false proof",
+          "Determinism: fixed vector order, idempotence, exact fixtures/expectations",
+          "Actionability of host procedure, failure handling, and aggregate pass/fail gate",
+          "Internal consistency of locked parser rules vs vectors",
+          "Alignment with sole supplied evidence (V0-shaped [exit 0] success only)"
+        ],
+        "evidence": [
+          "Original goal requests a deterministic verification plan only; candidate is labeled pending host execution throughout and disclaims seat-side workspace access.",
+          "Supplied mechanical evidence is solely the happy-path transcript ending in [exit 0]; candidate maps this to V0 and explicitly does not treat it as proof of V1–V8.",
+          "V1a–c / V5b / V6b encode structural nonzero reject; V2a–d encode echoed literal exit 1 with trailer-controlled Accept/Reject; R4/V3 encode structural precedence.",
+          "Residual minority-risk section plus dedicated V7 and release-note requirement preserve malformed transcript boundary risk without claiming it is discharged.",
+          "Host procedure defines fixed order, per-vector expected compare, idempotent re-parse, abort-on-first-mismatch, and evidence-pack contents under frontier-only execution."
+        ],
+        "non_blocking_findings": [
+          "Plugin-level zero-dependency proof is correctly marked out-of-band given no manifest/source evidence; remains a goal-adjacent residual, not a parser-vector substitute.",
+          "V8 mutation oracle is underspecified on exact insertion locus for the echoed substring; acceptable only after V2 fixtures are treated as normative.",
+          "CRLF normalization and NUL handling are host-documented branches; fine for a plan if recorded in the evidence pack, but they can still perturb marker-line identity."
+        ],
+        "required_actions": [
+          "Replace V4b–e and V7a–e pattern/ellipsis entries with complete, exact, copy-pasteable multi-line input fixtures (byte-clear escaping for newlines/NUL if used).",
+          "Give every vector one normative expected outcome (Accept, Reject, or Malformed)—or an explicit deterministic rule that yields exactly one outcome in the harness—and align the ‘exact outcomes’ claim with that choice.",
+          "Re-state the aggregate gate so PLAN EXECUTION PASS requires the fully specified fixture table only; keep the malformed-boundary residual paragraph mandatory in the host evidence pack."
+        ],
+        "summary": "Pre-execution plan largely matches the goal: nonzero structural reject, echo-literal ignore, preserved malformed-boundary residual, dependency-free harness stance, and no workspace/execution overclaim beyond the supplied V0 evidence. It is not release-ready as a deterministic plan because multiple vectors lack exact embedded inputs and some expected outcomes are non-unique.",
+        "verdict": "NEEDS_WORK"
+      }
+    }
+  ],
+  "schema_blocked": false,
+  "schema_failures": [],
+  "unresolved_blind_spots": []
+}

@@ -1,0 +1,26 @@
+{
+  "calls": 10,
+  "final_gate": {
+    "pass": 2,
+    "status": "passed",
+    "total": 2
+  },
+  "initial_gate": {
+    "pass": 1,
+    "status": "rejected",
+    "total": 2
+  },
+  "known_cost_usd": 0.2681,
+  "model_provenance": {
+    "actual": [
+      "grok-4.5"
+    ],
+    "requested": [
+      "grok-4.5"
+    ]
+  },
+  "run_id": "codex-0144-frontier-smoke-001",
+  "schema_version": 1,
+  "status": "completed",
+  "unknown_cost_calls": 0
+}

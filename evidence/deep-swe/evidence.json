@@ -1,0 +1,12 @@
+{
+  "attempt": 1,
+  "codex_log": "jobs/run/anko-default-function-arguments__UGhpmAi/agent/codex.txt",
+  "contract": "run-contract.json",
+  "deep_swe_reward": "jobs/run/anko-default-function-arguments__UGhpmAi/verifier/reward.json",
+  "harness": "pier",
+  "result": "jobs/run/anko-default-function-arguments__UGhpmAi/result.json",
+  "ri_runs": [],
+  "schema_version": 1,
+  "task": "anko-default-function-arguments",
+  "trajectory": "jobs/run/anko-default-function-arguments__UGhpmAi/agent/trajectory.json"
+}

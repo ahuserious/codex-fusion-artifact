@@ -1,0 +1,44 @@
+{
+  "invocation": {
+    "config_sha256": "9a1e638f11883d36f289c8d97a17281769e79487808daed98ce87fbb38b29a7e",
+    "input_sha256": "67be687b9020a48ef06a884e92f684184d370adaf32ed7bafdb6385f00763a43",
+    "prompt_sha256": "6b6fcb9b9a6d726f3bd2d7cfcfc8a9111ac8b8300b29ce83f6aa9a94b868e92f",
+    "response_schema_sha256": "480d34e0c8344e5543d494cefdbae3493162a6528c6d556f4754de8362241b97",
+    "run_id": "codex-0144-frontier-smoke-001",
+    "schema_name": "adversarial_verdict",
+    "schema_version": 1,
+    "seat_name": "grok45_constraint_auditor",
+    "stage": "gate-1",
+    "system_sha256": "1b845a2f8a68469aa9f14f6c18b7ed591699862b8e813d823fba117bf534e488"
+  },
+  "receipt": {
+    "attempt_id": "9757ca72bf376bc2a234293982cdc7ffa9b1f5e8c5e1784353d72d236857ea45",
+    "entry_id": "8fd825d441409da5c6d08da18135fe1d762845d69fbe5fa5d365a1ed1ff27f1e",
+    "invocation_sha256": "958cc6d79697a80fddc7593b25f56cc126efec0cf050f9444221f847203dca0d",
+    "response_sha256": "9aaabec48b49333d305a4507cb1a0007bdab20af3fbb85cd4a007c99e98b7252",
+    "schema_version": 1
+  },
+  "response": {
+    "actual_model": "grok-4.5",
+    "latency_seconds": 36.610619708,
+    "provider": "xai_direct",
+    "raw_status": "completed",
+    "request_id": "b12ebebe-0554-9ea8-9c1e-67c3a75e948b",
+    "requested_model": "grok-4.5",
+    "route": {},
+    "text": "{\n  \"verdict\": \"PASS\",\n  \"artifact_sha256\": \"f16de83c9f1d7ef56e01939fbf17d0b22e6299621df7871021dc57c44ad25219\",\n  \"summary\": \"Pre-execution plan meets the goal: frozen single-valued fixtures cover nonzero structural reject and literal exit-1 ignore, preserve mandatory malformed-boundary residual risk, define host-only execution/idempotence/failure handling, and correctly refuse workspace or result claims beyond the supplied V0 transcript.\",\n  \"criteria_reviewed\": [\n    \"Goal asks for a deterministic verification plan (pre-execution / host-applied), not completed execution\",\n    \"Reject actual nonzero structural exit markers\",\n    \"Ignore literal text exit 1 inside echoed shell commands when trailer governs otherwise\",\n    \"Preserve minority residual risk about malformed transcript boundaries\",\n    \"No claims of workspace access, inspection, or execution beyond supplied evidence\",\n    \"Dependency-free constraint handled without over-claim from supplied evidence\",\n    \"Normative rules yield single-valued Accept|Reject|Malformed outcomes\",\n    \"Frozen exact inputs and fixed run order for determinism\",\n    \"Host procedure, aggregate gate, failure handling, and evidence-pack requirements are actionable\",\n    \"Supplied mechanical evidence scoped only as happy-path baseline (V0)\"\n  ],\n  \"blind_spots\": [],\n  \"blocking_findings\": [],\n  \"non_blocking_findings\": [\n    \"V7c prose briefly renders the final marker as `[exit 0` while the authoritative bytes string includes the closing `]`; host should follow the bytes line.\",\n    \"Plugin dependency inventory and full Unicode-homoglyph coverage are intentionally residual/optional under stated evidence limits.\"\n  ],\n  \"evidence\": [\n    \"Candidate Status/scope: explicit pre-execution plan; no files inspected, no commands run; workspace unknown.\",\n    \"Sole supplied mechanical evidence matched as V0 Accept only; plan states it does not prove V1–V8.\",\n    \"R1–R9 lock whole-line `[exit N]` markers, last-wins governance, literal ignore, absent/truncated/NUL → Malformed (no invented nonzero).\",\n    \"Fixtures V1* / V2b / V3a,c / V5d / V7a,e,h / V8a require Reject on structural nonzero.\",\n    \"Fixtures V2a,c–f / V4b,f,g / V8b require Accept despite payload/echo `exit 1` when final structural marker is zero.\",\n    \"Mandatory Minority residual section plus V6a–d and V7c–f preserve malformed-boundary risk and fail-closed policy.\",\n    \"Host procedure: fixed vector order, exact-byte compare, abort on first mismatch, idempotence on V0/V2a/V1a/V6b, evidence pack with residual paragraph.\",\n    \"R8/aggregate gate: dep inventory optional and not required for PLAN EXECUTION PASS given evidence constraints.\",\n    \"Mechanical evidence string is exactly the V0 happy-path transcript with `[exit 0]`.\"\n  ],\n  \"required_actions\": []\n}",
+    "usage": {
+      "accounting_error": null,
+      "cached_tokens": 128,
+      "cost_usd": 0.0281584,
+      "input_output_usage_complete": true,
+      "input_tokens": 6952,
+      "output_tokens": 2412,
+      "raw_usage_invalid": false,
+      "reasoning_tokens": 1718,
+      "tool_calls": 0,
+      "unknown_cost_fail_closed": false
+    }
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,44 @@
+{
+  "invocation": {
+    "config_sha256": "9a1e638f11883d36f289c8d97a17281769e79487808daed98ce87fbb38b29a7e",
+    "input_sha256": "67be687b9020a48ef06a884e92f684184d370adaf32ed7bafdb6385f00763a43",
+    "prompt_sha256": "1be0ab5ca045214b841c848a95362961fa2e6c381c95c5041d2c8395513c9d0f",
+    "response_schema_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "run_id": "codex-0144-frontier-smoke-001",
+    "schema_name": "structured_response",
+    "schema_version": 1,
+    "seat_name": "grok45_researcher",
+    "stage": "panel",
+    "system_sha256": "d779222c2776b56df5e54e223cce12acbb6595f8883d73160e727a482ba81065"
+  },
+  "receipt": {
+    "attempt_id": "e60ca8b8fa8634ab13afabec464ab17770e43bf34d2725e87f6892d001e5bba1",
+    "entry_id": "5e971580e608c6dfa205d00d310992031bd5a5d4fda4e183d37901e897731545",
+    "invocation_sha256": "1feb1a9ff349af4d364dc4c7e6dbcbe255073b752cef4b15ac146a55966fcdb1",
+    "response_sha256": "b85c0599f579942c2f7ab065f27be02e50f3e92ff776d7e564067540ec2cc2b3",
+    "schema_version": 1
+  },
+  "response": {
+    "actual_model": "grok-4.5",
+    "latency_seconds": 34.840492375000004,
+    "provider": "xai_direct",
+    "raw_status": "completed",
+    "request_id": "f3941db6-bb20-9a80-87fa-5f704cf1cd5a",
+    "requested_model": "grok-4.5",
+    "route": {},
+    "text": "**Recommendation**  \nAccept and execute the following deterministic, dependency-free verification plan for the evidence parser. The plan validates that the parser (1) treats genuine nonzero exit markers as failures/rejections, (2) ignores the literal substring “exit 1” (or similar) when it appears only inside echoed command text or non-marker positions, and (3) correctly accepts the supplied mechanical evidence that ends in `[exit 0]`. The plan is self-contained, uses only the supplied transcript as oracle input, requires no host workspace, no network, and no external libraries, and can be inspected/executed by the active host. Preserve the minority risk note on malformed transcript boundaries as a residual concern for future hardening.\n\n**Reasoning**  \nThe supplied mechanical evidence is a minimal successful transcript:\n```\n$ regression-test\none parser regression test passed\n[exit 0]\n```\nA correct parser must:\n- Recognize the final `[exit 0]` (or equivalent canonical zero-exit marker) as success.\n- Reject any analogous nonzero marker such as `[exit 1]`, `[exit 2]`, `exit code: 1`, etc., when it appears in marker position.\n- Remain insensitive to the literal characters “exit 1” when they occur only as part of an echoed shell command line (e.g., `$ echo \"exit 1\"` or inside command arguments/output that is not the exit marker).\n\nBecause the plugin is dependency-free, verification reduces to pure string/structural checks and a small set of synthetic but deterministic test vectors derived directly from the supplied evidence pattern. No execution of the plugin binary itself is claimed or required beyond what the host performs; the plan only supplies inputs and expected accept/reject outcomes. Determinism is achieved by fixed input strings, exact match or well-defined regex/anchor rules for markers (marker must be on its own line or in a canonical trailer position, typically bracketed or clearly delimited), and ordered test cases with binary pass/fail.\n\n**Evidence or evidence needed**  \n- Sole supplied evidence: the transcript above ending in `[exit 0]` together with the statement that “one parser regression test passed”.  \n- No additional runtime traces, source, or workspace artifacts are provided or claimed.  \n- Evidence needed for host execution of this plan: none beyond the plan itself and the ability to feed the listed strings to the parser under test. If the host later supplies the parser implementation, the vectors below serve as the oracle.\n\n**Realistic edge cases**  \n- Literal “exit 1” inside an echoed command: `$ echo exit 1` or `$ echo \"the status was exit 1\"` followed by a true `[exit 0]` trailer → must accept.  \n- Nonzero marker in correct position: same body but trailer `[exit 1]` or `exit 1` → must reject.  \n- Mixed: command echo containing “exit 1” + true nonzero trailer → reject (marker wins).  \n- Zero marker with surrounding whitespace or minor formatting variants that still match the canonical form.  \n- Empty body + `[exit 0]` → accept; empty body + `[exit 1]` → reject.  \n- Multiple candidate markers: last/ trailer marker governs.  \n- Marker-like text mid-output that is not in trailer position → ignore for exit status.  \n- Unicode look-alikes, extra brackets, or case variants (if the parser is case-sensitive, document and test the exact rule).\n\n**Uncertainties**  \n- Exact canonical form of the exit marker (bracketed `[exit N]`, plain `exit N`, “Exited with code N”, etc.) is inferred from the supplied `[exit 0]`; the plan assumes the parser’s documented or observed marker syntax.  \n- Whether the parser is strictly line-based, regex-based, or uses a simple suffix/trailer scan is unknown; the plan therefore supplies whole-transcript strings.  \n- Behavior on completely malformed input (no marker at all) is not specified by supplied evidence; treat as reject or “unknown” per plugin contract.  \n- No performance, memory, or adversarial (extremely long) inputs are characterized.\n\n**Verification steps** (deterministic, host-executable, dependency-free)  \n1. Define a pure function (pseudo-code or host language) `parse_evidence(transcript: str) -> Accept | Reject` that implements the plugin’s rules. No imports beyond stdlib string handling.  \n2. Positive control (must Accept) — exact supplied evidence:  \n   ```\n   $ regression-test\n   one parser regression test passed\n   [exit 0]\n   ```  \n3. Negative control (must Reject) — nonzero marker:  \n   ```\n   $ regression-test\n   one parser regression test passed\n   [exit 1]\n   ```  \n4. Literal-ignore positive (must Accept) — echoed “exit 1” + zero trailer:  \n   ```\n   $ echo \"exit 1\"\n   exit 1\n   [exit 0]\n   ```  \n   or  \n   ```\n   $ regression-test --simulate \"exit 1\"\n   one parser regression test passed\n   [exit 0]\n   ```  \n5. Literal + nonzero (must Reject): same as step 4 but final marker `[exit 1]`.  \n6. Trailer-only and minimal cases:  \n   - `\"[exit 0]\"` → Accept  \n   - `\"[exit 1]\"` → Reject  \n   - `\"some output\\n[exit 0]\"` → Accept  \n7. Boundary / ordering: marker appears mid-transcript then a final zero marker → Accept (final wins); final nonzero → Reject.  \n8. Run the vector suite in fixed order; each case produces a Boolean; overall plan passes only if every expected Accept/Reject matches. Emit a simple deterministic report: “PASS n/n” or list of failing vectors.  \n9. Optional pure assertion: confirm the original supplied evidence is classified Accept and that any mutation changing the final marker to nonzero flips to Reject while mutations that only insert the literal string “exit 1” earlier do not.\n\nThe host can implement the above as a short, dependency-free test harness that feeds strings and checks return values. No filesystem, network, or external process execution is required for the plan itself.\n\n**Minority position worth preserving**  \nMalformed transcript boundaries remain a residual risk. If a transcript is truncated, concatenated, or contains unbalanced/partial markers (e.g., split multi-line output, missing final newline, embedded control characters, or two transcripts glued without clear separation), a purely syntactic trailer scan may mis-identify the exit status or silently accept incomplete evidence. The supplied evidence is well-formed, so this risk is not triggered here; however, future hardening should add explicit boundary validation (e.g., require a single canonical marker in the final N lines, reject on multiple conflicting trailers, or demand a length/checksum sidecar). This minority concern does not block acceptance of the current plan but should be recorded for the next iteration.\n\n**Assumptions**  \n- Marker syntax matches the supplied `[exit N]` form (N integer).  \n- Parser is a pure function of the transcript string.  \n- Host will perform actual execution/inspection; this report supplies only the plan and oracle vectors.  \n- No claims are made about any workspace state, live runs, or uns supplied artifacts.\n\nThis plan is complete, evidence-backed by the single supplied transcript, deterministic, and ready for host inspection/execution.",
+    "usage": {
+      "accounting_error": null,
+      "cached_tokens": 128,
+      "cost_usd": 0.0174604,
+      "input_output_usage_complete": true,
+      "input_tokens": 2884,
+      "output_tokens": 1985,
+      "raw_usage_invalid": false,
+      "reasoning_tokens": 430,
+      "tool_calls": 0,
+      "unknown_cost_fail_closed": false
+    }
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,44 @@
+{
+  "invocation": {
+    "config_sha256": "9a1e638f11883d36f289c8d97a17281769e79487808daed98ce87fbb38b29a7e",
+    "input_sha256": "67be687b9020a48ef06a884e92f684184d370adaf32ed7bafdb6385f00763a43",
+    "prompt_sha256": "5fabab1742934ccb4ed1ecb4210e307c45a26eef936a1837ea2c10e8dafb869f",
+    "response_schema_sha256": "480d34e0c8344e5543d494cefdbae3493162a6528c6d556f4754de8362241b97",
+    "run_id": "codex-0144-frontier-smoke-001",
+    "schema_name": "adversarial_verdict",
+    "schema_version": 1,
+    "seat_name": "grok45_verifier",
+    "stage": "gate",
+    "system_sha256": "563e5f2f4c5718c96b780ab0e457a40f57c7f04b8a1c75877ccce9cc4650a6e6"
+  },
+  "receipt": {
+    "attempt_id": "bb586035e93230c356de8651c4160957c61421ace0405680c72e8611386ec673",
+    "entry_id": "a7c9fe17e4ebe6997882945d6558884eba0cafbe956422103f6665585855cfe7",
+    "invocation_sha256": "ef1079e2489d0f62ab6e008ec3fad30a9cc5e52105cf1964b9712c01b1e532a9",
+    "response_sha256": "b48b21b14f1c90df27d0b563e5958f90084536fa7c7dec1c6ab0a7c2de6c976f",
+    "schema_version": 1
+  },
+  "response": {
+    "actual_model": "grok-4.5",
+    "latency_seconds": 56.746877583000014,
+    "provider": "xai_direct",
+    "raw_status": "completed",
+    "request_id": "9553620e-8ae1-917f-ba39-0fef2a97fa0a",
+    "requested_model": "grok-4.5",
+    "route": {},
+    "text": "{\n  \"verdict\": \"NEEDS_WORK\",\n  \"artifact_sha256\": \"5e46ba3aec8b000018feb48c1d5cd50e07cdfd61c46edd5caa469da47c8b6a64\",\n  \"summary\": \"Pre-execution plan largely matches the goal: nonzero structural reject, echo-literal ignore, preserved malformed-boundary residual, dependency-free harness stance, and no workspace/execution overclaim beyond the supplied V0 evidence. It is not release-ready as a deterministic plan because multiple vectors lack exact embedded inputs and some expected outcomes are non-unique.\",\n  \"criteria_reviewed\": [\n    \"Artifact is a verification plan (pre-execution mode; host execution not required yet)\",\n    \"Reject actual nonzero structural exit markers (coverage and expected outcomes)\",\n    \"Ignore literal text exit 1 inside echoed/non-marker command payload\",\n    \"Preserve minority risk on malformed transcript boundaries as visible residual\",\n    \"No claims of workspace access or execution beyond supplied mechanical evidence\",\n    \"Dependency-free constraint scoped for harness/plugin without false proof\",\n    \"Determinism: fixed vector order, idempotence, exact fixtures/expectations\",\n    \"Actionability of host procedure, failure handling, and aggregate pass/fail gate\",\n    \"Internal consistency of locked parser rules vs vectors\",\n    \"Alignment with sole supplied evidence (V0-shaped [exit 0] success only)\"\n  ],\n  \"blind_spots\": [],\n  \"blocking_findings\": [\n    \"Determinism/actionability gap: V4b–e and most of V7 are pattern/ellipsis descriptions rather than fully embedded exact transcript byte strings, so different hosts can instantiate different fixtures while claiming the same vector IDs.\",\n    \"Exact-expectation contradiction: plan states expected outcomes are exact, but V4c–e and V7a–b allow dual results (Reject-as-absent or Malformed), so the harness gate is not single-valued.\"\n  ],\n  \"non_blocking_findings\": [\n    \"Plugin-level zero-dependency proof is correctly marked out-of-band given no manifest/source evidence; remains a goal-adjacent residual, not a parser-vector substitute.\",\n    \"V8 mutation oracle is underspecified on exact insertion locus for the echoed substring; acceptable only after V2 fixtures are treated as normative.\",\n    \"CRLF normalization and NUL handling are host-documented branches; fine for a plan if recorded in the evidence pack, but they can still perturb marker-line identity.\"\n  ],\n  \"evidence\": [\n    \"Original goal requests a deterministic verification plan only; candidate is labeled pending host execution throughout and disclaims seat-side workspace access.\",\n    \"Supplied mechanical evidence is solely the happy-path transcript ending in [exit 0]; candidate maps this to V0 and explicitly does not treat it as proof of V1–V8.\",\n    \"V1a–c / V5b / V6b encode structural nonzero reject; V2a–d encode echoed literal exit 1 with trailer-controlled Accept/Reject; R4/V3 encode structural precedence.\",\n    \"Residual minority-risk section plus dedicated V7 and release-note requirement preserve malformed transcript boundary risk without claiming it is discharged.\",\n    \"Host procedure defines fixed order, per-vector expected compare, idempotent re-parse, abort-on-first-mismatch, and evidence-pack contents under frontier-only execution.\"\n  ],\n  \"required_actions\": [\n    \"Replace V4b–e and V7a–e pattern/ellipsis entries with complete, exact, copy-pasteable multi-line input fixtures (byte-clear escaping for newlines/NUL if used).\",\n    \"Give every vector one normative expected outcome (Accept, Reject, or Malformed)—or an explicit deterministic rule that yields exactly one outcome in the harness—and align the ‘exact outcomes’ claim with that choice.\",\n    \"Re-state the aggregate gate so PLAN EXECUTION PASS requires the fully specified fixture table only; keep the malformed-boundary residual paragraph mandatory in the host evidence pack.\"\n  ]\n}",
+    "usage": {
+      "accounting_error": null,
+      "cached_tokens": 128,
+      "cost_usd": 0.0273204,
+      "input_output_usage_complete": true,
+      "input_tokens": 5330,
+      "output_tokens": 2813,
+      "raw_usage_invalid": false,
+      "reasoning_tokens": 1928,
+      "tool_calls": 0,
+      "unknown_cost_fail_closed": false
+    }
+  },
+  "schema_version": 1
+}

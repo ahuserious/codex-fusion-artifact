@@ -1,0 +1,86 @@
+{
+  "artifact": "codex-fusion-artifact",
+  "campaign_date": "2026-07-20",
+  "claim_scope": "limited_engineering_validation",
+  "limited_due_to_api_cost": true,
+  "license": "none-selected",
+  "openrouter_live_tested": false,
+  "schema_version": 1,
+  "selected_receipts_known_cost_usd": 2.38082845,
+  "selected_receipts_are_complete_campaign_spend": false,
+  "source": {
+    "codex_version": "0.145.0-alpha.18",
+    "commit": "eaba350bc49cecd5e4ef56e76b0a3f5c188be326",
+    "installed_tree_sha256": "1f9722b7659edd643fa62a1e36ae6ad6e008a0e46535668eab2af2665818ccaa",
+    "plugin_tree_sha256": "1f9722b7659edd643fa62a1e36ae6ad6e008a0e46535668eab2af2665818ccaa",
+    "repository": "https://github.com/ahuserious/relentless-inception-codex",
+    "version": "0.1.4"
+  },
+  "runs": [
+    {
+      "actual_models": [
+        "grok-4.5"
+      ],
+      "calls": 10,
+      "current_release_binding": "exact live provider/orchestration path",
+      "gate_history": [
+        {
+          "pass": 1,
+          "stage": "gate-0",
+          "status": "rejected",
+          "total": 2
+        },
+        {
+          "pass": 2,
+          "stage": "gate-1",
+          "status": "passed",
+          "total": 2
+        }
+      ],
+      "id": "codex-0144-frontier-smoke-001",
+      "kind": "direct_xai_fusion",
+      "known_cost_usd": 0.2681,
+      "requested_models": [
+        "grok-4.5"
+      ],
+      "status": "completed",
+      "tokens": {
+        "cached": 1280,
+        "input": 54021,
+        "output": 27039,
+        "reasoning": 9297,
+        "total": 81060
+      },
+      "unknown_cost_calls": 0
+    },
+    {
+      "current_release_binding": "historical_only_validator_rejects_drift",
+      "external_calls": 17,
+      "external_known_cost_usd": 0.32157745,
+      "host_cost_usd": 1.410944,
+      "id": "codex-final-003/fix-git",
+      "kind": "terminal_bench",
+      "models": {
+        "grok-4.3_calls": 8,
+        "grok-4.5_calls": 9,
+        "host": "openai/gpt-5.6-sol"
+      },
+      "reward": 1.0,
+      "status": "task_pass_historical_contract_drift"
+    },
+    {
+      "current_release_binding": "negative_preflight_trace_runtime_jig_changed_after_failure",
+      "external_calls": 0,
+      "f2p_passed": 0,
+      "f2p_total": 2,
+      "host_cost_usd": 0.380207,
+      "id": "codex-final-006/anko-default-function-arguments",
+      "kind": "deep_swe",
+      "p2p_passed": 119,
+      "p2p_total": 119,
+      "partial": 0.9834710743801653,
+      "reward": 0,
+      "status": "preflight_blocked_before_fusion"
+    }
+  ]
+}

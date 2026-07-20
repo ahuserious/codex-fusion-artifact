@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ahuserious/codex-fusion-artifact/schemas/artifact-manifest.schema.json",
+  "additionalProperties": false,
+  "properties": {
+    "artifact": {
+      "const": "codex-fusion-artifact"
+    },
+    "files": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "size_bytes": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "path",
+          "size_bytes",
+          "sha256"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "generated_by": {
+      "const": "scripts/verify_artifact.py --refresh"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact",
+    "generated_by",
+    "files"
+  ],
+  "title": "Codex fusion artifact manifest",
+  "type": "object"
+}

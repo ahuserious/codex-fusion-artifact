@@ -1,0 +1,14 @@
+{
+  "external_calls": 0,
+  "f2p_passed": 0,
+  "f2p_total": 2,
+  "host_cost_usd": 0.380207,
+  "p2p_passed": 119,
+  "p2p_total": 119,
+  "partial": 0.9834710743801653,
+  "reward": 0,
+  "schema_version": 1,
+  "status": "preflight_blocked_before_fusion",
+  "task": "datacurve/anko-default-function-arguments",
+  "trace": "codex-final-006"
+}

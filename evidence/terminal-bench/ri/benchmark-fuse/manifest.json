@@ -1,0 +1,31 @@
+{
+  "config_hash": "dc84615038552ae05ac5d9070576c8219279ea624a7963acb6d14d4b7722d7db",
+  "created_at": "2026-07-20T04:20:38.311567+00:00",
+  "input_hash": "c8826de10ade8edcc9b704cb6a4adf17340c7d3c864aeaa732fdd5149411d1f4",
+  "run_id": "benchmark-fuse",
+  "stages": {
+    "gate-0": {
+      "artifact": "gate-0.json",
+      "status": "passed",
+      "updated_at": "2026-07-20T04:23:42.110963+00:00"
+    },
+    "judge": {
+      "artifact": "judge.json",
+      "status": "completed",
+      "updated_at": "2026-07-20T04:22:16.873705+00:00"
+    },
+    "panel": {
+      "artifact": "panel.json",
+      "status": "completed",
+      "updated_at": "2026-07-20T04:21:58.231243+00:00"
+    },
+    "synthesis": {
+      "artifact": "synthesis.json",
+      "status": "completed",
+      "updated_at": "2026-07-20T04:23:12.272466+00:00"
+    }
+  },
+  "status": "completed",
+  "task_hash": "eaa2c155329c23b7c95a932432ace315372dc079c6f1602b293841dd6c34696a",
+  "updated_at": "2026-07-20T04:23:42.124514+00:00"
+}

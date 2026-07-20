@@ -1,0 +1,44 @@
+{
+  "invocation": {
+    "config_sha256": "9a1e638f11883d36f289c8d97a17281769e79487808daed98ce87fbb38b29a7e",
+    "input_sha256": "67be687b9020a48ef06a884e92f684184d370adaf32ed7bafdb6385f00763a43",
+    "prompt_sha256": "5fabab1742934ccb4ed1ecb4210e307c45a26eef936a1837ea2c10e8dafb869f",
+    "response_schema_sha256": "480d34e0c8344e5543d494cefdbae3493162a6528c6d556f4754de8362241b97",
+    "run_id": "codex-0144-frontier-smoke-001",
+    "schema_name": "adversarial_verdict",
+    "schema_version": 1,
+    "seat_name": "grok45_constraint_auditor",
+    "stage": "gate",
+    "system_sha256": "1b845a2f8a68469aa9f14f6c18b7ed591699862b8e813d823fba117bf534e488"
+  },
+  "receipt": {
+    "attempt_id": "f599afab9b3b0cda5d57d71a9d2e4c72a70b4d72ff6a135e220212d1e7eedaa9",
+    "entry_id": "f19cae745199fc71565e9cbdb021bab1a41a1046516dabd26469f687a6c14026",
+    "invocation_sha256": "75d13538296394f879cc23d1f5f70b19ee88adb832ebe2659e28f9ac45117465",
+    "response_sha256": "e4dd16c3661523f58dea5a65298da50fd30421675a23e141e019578ba25c1f22",
+    "schema_version": 1
+  },
+  "response": {
+    "actual_model": "grok-4.5",
+    "latency_seconds": 37.69410833399999,
+    "provider": "xai_direct",
+    "raw_status": "completed",
+    "request_id": "dbb6320d-141b-984c-85c0-a4449abf7008",
+    "requested_model": "grok-4.5",
+    "route": {},
+    "text": "{\n  \"verdict\": \"PASS\",\n  \"artifact_sha256\": \"5e46ba3aec8b000018feb48c1d5cd50e07cdfd61c46edd5caa469da47c8b6a64\",\n  \"summary\": \"Pre-execution plan meets the goal: deterministic vectors for nonzero structural reject vs echoed literal ignore, explicit preserved malformed-boundary minority risk, and no workspace/execution claims beyond the supplied V0 evidence. Host-pending execution is correctly labeled; no blocking plan defects.\",\n  \"criteria_reviewed\": [\n    \"Artifact is a deterministic verification plan (not a false claim of completed execution)\",\n    \"Coverage: reject actual nonzero structural exit markers\",\n    \"Coverage: ignore literal text exit 1 inside echoed shell commands\",\n    \"Preserve minority risk about malformed transcript boundaries as visible residual\",\n    \"No claims of workspace access or execution beyond supplied mechanical evidence\",\n    \"Dependency-free constraint reflected for harness/plugin scope\",\n    \"Locked testable parser rules and fixed expected outcomes\",\n    \"Host execution procedure, aggregate gate, and failure handling actionability\",\n    \"Idempotence / fixed vector order determinism\",\n    \"Honesty about limits of supplied V0-only mechanical evidence\"\n  ],\n  \"blind_spots\": [],\n  \"blocking_findings\": [],\n  \"non_blocking_findings\": [\n    \"V4b–V4e and several V7 cases are pattern/description-level rather than fully embedded exact multi-line byte fixtures; host must expand them before run to keep harness purely mechanical.\",\n    \"Some negative cases allow Reject or Malformed as dual success; coarse enum is stated, but dual acceptance slightly weakens single-oracle strictness.\",\n    \"Plugin dependency-freedom is treated as out-of-band/optional inventory (R10) because no manifest/source was supplied; harness dependency-freedom is gated, plugin static proof is not.\"\n  ],\n  \"evidence\": [\n    \"Goal requests a plan only; candidate is explicitly a pre-execution plan with all vector statuses pending host execution.\",\n    \"Supplied mechanical evidence quoted and scoped solely as V0 happy-path [exit 0] accept; plan states it does not prove nonzero reject, echo-ignore, deps, or boundaries.\",\n    \"Nonzero reject vectors: V1a–c ([exit 1]/[exit 2]/[exit 255]), V5b, V6b with Expected Reject.\",\n    \"Echo/literal ignore vectors: V2a–d (echo/printf/false; echo exit 1 bodies with [exit 0] Accept and paired nonzero Reject).\",\n    \"Precedence/payload fakes: V3a–c structural trailer wins over body [exit N] text.\",\n    \"Minority risk section retained with policy (no invent nonzero from garbage; no silent repair) plus dedicated V7a–e and release-note residual requirement.\",\n    \"Explicit non-claims: no seat-side cd/reads/runs; no production proof until V1–V3; execution authority = active host only.\",\n    \"Determinism controls: fixed order V0…V8, exact expected outcomes, re-parse idempotence, abort-on-first-mismatch procedure.\",\n    \"Failure handling maps V1-only/V2-only/V3a/R8 failures to release blocks.\"\n  ],\n  \"required_actions\": []\n}",
+    "usage": {
+      "accounting_error": null,
+      "cached_tokens": 128,
+      "cost_usd": 0.0232884,
+      "input_output_usage_complete": true,
+      "input_tokens": 5321,
+      "output_tokens": 2144,
+      "raw_usage_invalid": false,
+      "reasoning_tokens": 1404,
+      "tool_calls": 0,
+      "unknown_cost_fail_closed": false
+    }
+  },
+  "schema_version": 1
+}

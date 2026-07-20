@@ -1,0 +1,41 @@
+{
+  "config_hash": "9a1e638f11883d36f289c8d97a17281769e79487808daed98ce87fbb38b29a7e",
+  "created_at": "2026-07-20T05:26:55.783893+00:00",
+  "input_hash": "67be687b9020a48ef06a884e92f684184d370adaf32ed7bafdb6385f00763a43",
+  "run_id": "codex-0144-frontier-smoke-001",
+  "stages": {
+    "amendment-1": {
+      "artifact": "synthesis-amendment-1.json",
+      "status": "completed",
+      "updated_at": "2026-07-20T05:32:02.720266+00:00"
+    },
+    "gate-0": {
+      "artifact": "gate-0.json",
+      "status": "rejected",
+      "updated_at": "2026-07-20T05:30:48.561406+00:00"
+    },
+    "gate-1": {
+      "artifact": "gate-1.json",
+      "status": "passed",
+      "updated_at": "2026-07-20T05:32:39.337729+00:00"
+    },
+    "judge": {
+      "artifact": "judge.json",
+      "status": "completed",
+      "updated_at": "2026-07-20T05:28:43.762167+00:00"
+    },
+    "panel": {
+      "artifact": "panel.json",
+      "status": "completed",
+      "updated_at": "2026-07-20T05:28:10.986619+00:00"
+    },
+    "synthesis": {
+      "artifact": "synthesis.json",
+      "status": "completed",
+      "updated_at": "2026-07-20T05:29:51.805100+00:00"
+    }
+  },
+  "status": "completed",
+  "task_hash": "367e8e49b5e498b2c5a1d93711dded07b7b3481c87771ae3e018f3d009d05c03",
+  "updated_at": "2026-07-20T05:32:39.343744+00:00"
+}

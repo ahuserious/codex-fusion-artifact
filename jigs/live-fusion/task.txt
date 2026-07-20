@@ -1,0 +1,1 @@
+Produce a deterministic, host-executable verification plan for a parser that accepts a command transcript only when its final structural marker is exactly [exit 0]. Include nonzero, echoed-literal, missing-marker, truncated-marker, duplicate-marker, and binary-boundary cases. Do not mutate the workspace.

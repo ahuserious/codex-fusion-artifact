@@ -1,0 +1,44 @@
+{
+  "invocation": {
+    "config_sha256": "9a1e638f11883d36f289c8d97a17281769e79487808daed98ce87fbb38b29a7e",
+    "input_sha256": "67be687b9020a48ef06a884e92f684184d370adaf32ed7bafdb6385f00763a43",
+    "prompt_sha256": "25b57eeaf57ece31164b8c3a9d2f6ab5f882124eb8d31eed3e56a3944959871d",
+    "response_schema_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+    "run_id": "codex-0144-frontier-smoke-001",
+    "schema_name": "structured_response",
+    "schema_version": 1,
+    "seat_name": "grok45_constraint_auditor",
+    "stage": "panel",
+    "system_sha256": "d1c206c04f615d3fe3d50a0280f5059bfc2bd3aa956e1507823758107dbc0343"
+  },
+  "receipt": {
+    "attempt_id": "868c2bc6cbf019930ef51ed53debfac6c026c3afec2a294708685ecd8b35b118",
+    "entry_id": "9b2c309ead000c3ff09f74ea5c14d70a2be75bfdad0b286c228b495553455eb5",
+    "invocation_sha256": "a56fb7e57c456a20e6d9410d88b26924201d3a19d4bf1a28c3e1f37feaa86ded",
+    "response_sha256": "bd37fa62bc8165eb5aec0fdabe1f798cdff131cff58da36a7f774b38e9674e16",
+    "schema_version": 1
+  },
+  "response": {
+    "actual_model": "grok-4.5",
+    "latency_seconds": 40.35234612499999,
+    "provider": "xai_direct",
+    "raw_status": "completed",
+    "request_id": "1fad0a19-1375-97b0-9866-f3a8993bb337",
+    "requested_model": "grok-4.5",
+    "route": {},
+    "text": "## Recommendation\nAccept a **host-executable, deterministic verification plan** (no external-seat workspace/execution claims) that:\n1. Locks parser acceptance/rejection rules for exit markers vs. echoed literal text.\n2. Requires an expanded, ordered regression suite the active host must run and capture under the frontier-only default profile.\n3. Gates release smoke on explicit pass/fail predicates.\n4. **Preserves** the minority risk on malformed transcript boundaries as a non-blocking but mandatory documented residual risk with a dedicated negative test.\n\nDo **not** treat the single supplied `[exit 0]` line as sufficient evidence that nonzero rejection or echo-ignore behavior works.\n\n## Reasoning (constraint audit)\n| Stated requirement | Trace to supplied evidence | Gap / contradiction |\n|---|---|---|\n| Dependency-free plugin | None | No manifest, import graph, or lockfile evidence. |\n| Parser **rejects actual nonzero exit markers** | Mechanical evidence only shows `[exit 0]` + “one parser regression test passed” | No sample of `[exit 1]` / `[exit 2]` / bare nonzero status being rejected. |\n| Parser **ignores literal text `exit 1` inside an echoed shell command** | None | No transcript containing `echo … exit 1 …` (or equivalent) with overall success. |\n| Deterministic verification plan | Task asks for one; host will inspect/execute accepted plan | Plan must be pure text predicates + ordered cases; no nondeterministic timing/network. |\n| External seats: no host workspace access | Context partition states this | Any plan step that implies seat-side `cd`, file read, or run is invalid. |\n| Release smoke, frontier-only default profile | Context states this | Plan must name that profile and smoke scope only. |\n| Preserve minority risk: malformed transcript boundaries | Task mandates preservation | Not mentioned in mechanical evidence; must remain explicit residual. |\n\n**Mechanical claim check:** The only concrete artifact is:\n```text\n$ regression-test\none parser regression test passed\n[exit 0]\n```\nThat supports “at least one happy-path parser test exited zero.” It does **not** support nonzero rejection, echo-literal ignore, dependency-freedom, or boundary robustness. Claiming otherwise would exceed supplied evidence.\n\n## Evidence or evidence needed\n**Have (only):**\n- One regression invocation, narrative “passed,” marker `[exit 0]`.\n- Process constraints: frontier-only default profile; host executes accepted plan; seats have no workspace.\n\n**Still required (host must produce after plan execution):**\n1. Plugin inventory proving zero runtime/build dependencies (e.g. no third-party imports, empty dep manifest, or equivalent static list).\n2. Transcript corpus with **paired** cases:\n   - Real status markers: `[exit 1]`, `[exit 2]`, and if supported bare `exit 1` as sole status line → **reject**.\n   - Echoed literals: commands whose argv/stdout contain the characters `exit 1` (e.g. `echo \"exit 1\"`, `printf '%s\\n' 'exit 1'`) but true status `[exit 0]` → **accept**.\n3. Boundary-malformed transcripts (truncated marker, split marker across chunks, missing closer, dual markers) → defined fail-closed behavior + risk log.\n4. Single deterministic smoke log under frontier-only default profile with step-level exit markers.\n\n## Realistic edge cases\n- Marker inside partial line: `foo [exit 1` (no closing `]`).\n- Multiple markers: success body then trailing `[exit 1]`.\n- Literal in non-echo contexts: `sed 's/foo/exit 1/'`, comments, here-docs.\n- Zero-padded / noisy markers: `[exit 01]`, `[EXIT 1]`, `exit\\t1`.\n- Empty transcript or only whitespace.\n- Command that prints `[exit 0]` as data while true status is nonzero (parser must prefer structural status over payload text).\n- CRLF vs LF; leading/trailing junk around marker.\n\n## Uncertainties\n- Exact on-wire grammar of “actual nonzero exit marker” (bracket form only vs. any trailing status) is not defined in evidence.\n- Whether “echoed shell command” means shell AST awareness or pure textual context (e.g. line matched by `echo`/`printf`).\n- Plugin packaging format and what “dependency-free” formally means for this repo.\n- How the host surfaces parser reject (exception vs. structured fail object).\n\nThese remain open until the host runs the plan and returns artifacts; seats must not invent them.\n\n## Verification steps (deterministic plan for the active host)\nExecute **only** on the host; record full transcripts. Order is fixed for determinism.\n\n1. **Static dependency gate**  \n   - Enumerate plugin source/manifest.  \n   - Predicate: zero external runtime deps; fail smoke if any appear.\n\n2. **Corpus freeze** (write-once fixtures, no network):  \n   - `T_ok_echo`: transcript with echoed literal `exit 1` in command/stdout and final structural `[exit 0]`.  \n   - `T_rej_marker`: same shape with structural `[exit 1]` (and variants 2, 130 if in scope).  \n   - `T_rej_bare` (if bare status in grammar): trailing nonzero status without brackets.  \n   - `T_boundary_*`: truncated/split/duplicate/missing markers.  \n   - `T_payload_fake`: stdout contains `[exit 0]` text but true marker nonzero.\n\n3. **Parser invocation (pure function)**  \n   For each fixture: `result = parse(fixture)`.  \n   Predicates (must hold exactly):  \n   - `T_ok_echo` → accept.  \n   - `T_rej_*` and `T_payload_fake` → reject.  \n   - `T_boundary_*` → reject (fail-closed) OR accept-only-if-spec-says-otherwise; **always** emit boundary-risk note.\n\n4. **Regression re-run**  \n   Re-execute existing `regression-test`; require `[exit 0]` and that the suite **includes** the new fixtures (not only the prior single case).\n\n5. **Release smoke (frontier-only default profile)**  \n   - Run profile smoke that loads the plugin on the frozen corpus.  \n   - Aggregate predicate: all accept cases accepted, all reject cases rejected, dep gate green, single consolidated log with per-step markers.  \n   - Exit nonzero if any predicate fails.\n\n6. **Evidence pack (host returns to panel)**  \n   - Full logs, fixture hashes, predicate table (case → expected → actual).  \n   - No seat-side execution assumed.\n\n**Pass criterion:** all predicates true + evidence pack complete.  \n**Fail criterion:** any mismatch, missing fixture, or undeclared dependency.\n\n## Minority position worth preserving\n**Malformed transcript boundaries:** Even if all well-formed marker/echo tests pass, a truncated or split exit marker (or fused multi-command transcript without clear delimiters) can cause false accept or false reject. Treat fail-closed rejection as the default safety posture, keep an explicit residual risk in the release note, and never silently “repair” broken boundaries. This risk is **not** discharged by the current `[exit 0]` evidence and remains open after green smoke unless a dedicated boundary suite is shown.\n\n---\n**Assumption statement:** Plan assumes the host alone may read/run workspace artifacts and that “actual nonzero exit markers” are structural status tokens distinct from payload text. No workspace access or execution was performed or claimed by this seat beyond the single supplied evidence block.",
+    "usage": {
+      "accounting_error": null,
+      "cached_tokens": 128,
+      "cost_usd": 0.0157844,
+      "input_output_usage_complete": true,
+      "input_tokens": 723,
+      "output_tokens": 2426,
+      "raw_usage_invalid": false,
+      "reasoning_tokens": 807,
+      "tool_calls": 0,
+      "unknown_cost_fail_closed": false
+    }
+  },
+  "schema_version": 1
+}

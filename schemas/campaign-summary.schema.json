@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ahuserious/codex-fusion-artifact/schemas/campaign-summary.schema.json",
+  "additionalProperties": true,
+  "properties": {
+    "artifact": {
+      "const": "codex-fusion-artifact"
+    },
+    "campaign_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "claim_scope": {
+      "const": "limited_engineering_validation"
+    },
+    "limited_due_to_api_cost": {
+      "const": true
+    },
+    "runs": {
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "source": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "artifact",
+    "campaign_date",
+    "claim_scope",
+    "limited_due_to_api_cost",
+    "source",
+    "runs"
+  ],
+  "title": "Codex limited-cost campaign summary",
+  "type": "object"
+}
