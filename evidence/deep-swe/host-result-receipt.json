@@ -1,0 +1,59 @@
+{
+  "attestation": {
+    "kind": "curated_private_source_commitment",
+    "public_can_recompute_raw_sha256": false,
+    "selected_fields_operator_attested": true
+  },
+  "public_index_sha256": "500e7cb83c81f6dddf978c0e1479a115f551fa169794842b793e59f23cea11d2",
+  "raw_run_contract": {
+    "published": false,
+    "sha256": "70c45f86d95c2cb60a555de71f73a73ac76288c62f694e76d8f4e8445f2f5004",
+    "withheld_reason": "Contains private absolute checkout, task, output, and ephemeral secret-mount paths. Selected non-sensitive pins are transcribed below."
+  },
+  "raw_source": {
+    "logical_name": "deep-swe-result.json",
+    "published": false,
+    "sha256": "02a5742863b824ede76f939c5ed59c8d220f9b549ac2558f93db5cf1432ae8d6",
+    "withheld_reason": "The complete harness result embeds private local paths and links to withheld session material."
+  },
+  "record_type": "host_result_receipt",
+  "schema_version": 1,
+  "selected_contract_pins": {
+    "agent_timeout_seconds": 3600,
+    "base_commit": "9d2d84bb1564e9513287998c56ccf16c01c19008",
+    "benchmark_runtime_tree_sha256": "894753574aa3e48f71a3a75b246f79fafce102a0064fde19ffe41eeea4dbf6fe",
+    "codex_version": "0.145.0-alpha.18",
+    "dataset_source_commit": "6db64a40f3318d8659238ff34a8cc4b491c49205",
+    "harness_version": "0.3.0",
+    "image_digest": "sha256:31c8dce39317314800d1200610475ba27b98c71350d524d25e7df71d80c5752a",
+    "model": "openai/gpt-5.6-sol",
+    "plugin_tree_sha256": "1f9722b7659edd643fa62a1e36ae6ad6e008a0e46535668eab2af2665818ccaa",
+    "reasoning_effort": "xhigh",
+    "runner_sha256": "5fe1b56ba820aaf592495fa07bf454cd6cedb191f3b05b42eb1f1c9d0766df33",
+    "validator_sha256": "fa0f29e70790a122f78ee584ad13f599a0d8992a776dd9f56d5377c3fe76cc88"
+  },
+  "selected_result_fields": {
+    "agent": {
+      "cache_tokens": 48384,
+      "cost_usd": 0.380207,
+      "input_tokens": 70231,
+      "model": "openai/gpt-5.6-sol",
+      "output_tokens": 8226,
+      "steps": 3
+    },
+    "exception_info": null,
+    "finished_at": "2026-07-20T05:23:26.719807Z",
+    "reward": {
+      "f2p_passed": 0,
+      "f2p_total": 2,
+      "p2p_passed": 119,
+      "p2p_total": 119,
+      "partial": 0.9834710743801653,
+      "reward": 0
+    },
+    "started_at": "2026-07-20T05:18:26.054344Z",
+    "task_checksum": "1b9e03d271cf954e2126ae084078e15072b533bd689522443e576ba1e70afd1e",
+    "task_name": "datacurve/anko-default-function-arguments",
+    "trial_name": "anko-default-function-arguments__UGhpmAi"
+  }
+}

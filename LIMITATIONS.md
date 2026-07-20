@@ -4,7 +4,7 @@
 
 This is a release-engineering artifact, not a controlled benchmark. Only one current direct-xAI fusion run, one selected Terminal-Bench trace, and one selected DeepSWE trace are reported. There are no repeated seeds, matched solo baseline, confidence intervals, blinded graders, or significance tests.
 
-The selected receipts do not represent the full development spend. Failed experiments and earlier iterations were not aggregated into a complete billing statement. Costs here are exact only where the retained host or provider ledger reports them.
+The selected receipts do not represent the full development spend. Failed experiments and earlier iterations were not aggregated into a complete billing statement. Direct-xAI and historical external-seat costs are recomputable from public provider ledgers. The two Codex host costs are selected fields from withheld raw harness results and are operator-attested against published SHA-256 commitments; they are not independently recomputable by a public-only reader.
 
 ## Model and provider coverage
 
@@ -21,6 +21,8 @@ The DeepSWE/Pier trace stopped before any fusion dispatch because the preflight 
 ## Evidence redaction
 
 Raw Codex sessions, trajectories, job logs, auth state, local configuration, absolute private paths, ephemeral secret-file paths, and the local `result.json` were withheld. Exact publishable provider response artifacts were retained for the standalone live run because content review and automated scans found no credential or local-identity values. The manifest identifies the public derivative; it is not a claim that every private source byte is present.
+
+The curated host receipts are not signatures and do not reveal their withheld inputs. They make the field selection and private-source hash explicit, support later verification by an authorized holder of the raw files, and prevent this repository from presenting derived host cost or preflight claims as if they came from public raw bytes.
 
 ## Integrity boundary
 

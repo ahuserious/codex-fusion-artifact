@@ -1,5 +1,9 @@
 {
   "schema_version": 1,
+  "source": {
+    "repository": "https://github.com/ahuserious/relentless-inception-codex",
+    "commit": "eaba350bc49cecd5e4ef56e76b0a3f5c188be326"
+  },
   "codex": {
     "version": "0.145.0-alpha.18",
     "model": "openai/gpt-5.6-sol",

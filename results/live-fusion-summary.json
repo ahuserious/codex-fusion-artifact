@@ -22,5 +22,12 @@
   "run_id": "codex-0144-frontier-smoke-001",
   "schema_version": 1,
   "status": "completed",
+  "tokens": {
+    "cached": 1280,
+    "input": 54021,
+    "output": 27039,
+    "reasoning": 9297,
+    "total": 81060
+  },
   "unknown_cost_calls": 0
 }

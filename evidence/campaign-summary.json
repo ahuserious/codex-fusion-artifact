@@ -2,6 +2,12 @@
   "artifact": "codex-fusion-artifact",
   "campaign_date": "2026-07-20",
   "claim_scope": "limited_engineering_validation",
+  "cost_evidence": {
+    "deep_swe_host": "curated_private_source_commitment",
+    "direct_xai": "public_provider_ledger",
+    "terminal_external": "public_provider_ledgers",
+    "terminal_host": "curated_private_source_commitment"
+  },
   "limited_due_to_api_cost": true,
   "license": "none-selected",
   "openrouter_live_tested": false,

@@ -25,6 +25,8 @@ The equal source/cache tree hashes were computed over relative path, executable 
 
 The published run omits `.run.lock` and `result.json`; the latter contained only an absolute local artifact-directory path beyond the already published semantic artifacts. All response receipts referenced by the ledger are retained.
 
+The offline verifier recomputes the canonical invocation hash, attempt ID, normalized response hash, entry ID, embedded receipt links, synthesis text hashes, both gate vote counts, and the final handoff payload/contract hashes. This is stronger than checking the copied files against a freshly generated checksum list.
+
 ## Terminal-Bench trace
 
 - Campaign directory label: `codex-final-003`
@@ -37,6 +39,8 @@ The published run omits `.run.lock` and `result.json`; the latter contained only
 
 Recorded historical hashes differ from the final source: plugin `d32f79e0...` versus current `1f9722b7...`, and the current validator rejects the old timeout contract. The public summary preserves that drift explicitly.
 
+[`evidence/terminal-bench/host-result-receipt.json`](evidence/terminal-bench/host-result-receipt.json) commits to the withheld raw harness result and contract while transcribing the host cost, token counts, task identity, timestamps, and reward. [`evidence/terminal-bench/current-validator-observation.json`](evidence/terminal-bench/current-validator-observation.json) records the current validator bytes, exit code, and exact rejection. These are curated operator attestations, not public substitutes for the withheld raw result.
+
 ## DeepSWE trace
 
 - Campaign directory label: `codex-final-006`
@@ -48,3 +52,5 @@ Recorded historical hashes differ from the final source: plugin `d32f79e0...` ve
 - Reward: `0`
 
 The run used final plugin/runner/validator hashes but a pre-fix benchmark-runtime tree. It dispatched no Relentless Inception model calls.
+
+[`evidence/deep-swe/host-result-receipt.json`](evidence/deep-swe/host-result-receipt.json) commits to the withheld host result and contract. [`evidence/deep-swe/preflight-observation.json`](evidence/deep-swe/preflight-observation.json) commits to the withheld Codex transcript and trajectory and records the observed 25,050-character preflight against a 12,000-character bound. A holder of those private files can recompute the commitments; a public-only reader cannot.

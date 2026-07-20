@@ -1,0 +1,27 @@
+{
+  "attestation": {
+    "kind": "operator_observation_with_source_commitments",
+    "public_can_rerun_without_private_contract": false
+  },
+  "classification": "rejected_contract_drift",
+  "command_template": "python3 <PLUGIN_CHECKOUT>/bench/validate_evidence.py attempt <PRIVATE_ATTEMPT>/evidence.json",
+  "historical_contract": {
+    "agent_timeout_seconds": null,
+    "plugin_tree_sha256": "d32f79e0c866fd7739c530469816ed49538fc79e0397e0e30c94e1d837a25b9d",
+    "validator_sha256": "f47519838ed0d2299ad4e1ba89a27b1ca2da4c7795808a5cf872b6b4089eff1d"
+  },
+  "observation": {
+    "combined_output": "INVALID: Agent timeout drift\n",
+    "exit_code": 1,
+    "observed_on": "2026-07-20"
+  },
+  "public_index_sha256": "9b268f0dbf5dc55872793bfc0c63e5b78440b468bf7c27a8678191049619931b",
+  "raw_run_contract_sha256": "e14b56e03f078887e6f9501a9b9eac50abb2e0d2e777a554f3939de4744674fe",
+  "record_type": "current_validator_observation",
+  "schema_version": 1,
+  "validator": {
+    "current_agent_timeout_seconds": 3600,
+    "release_source_commit": "eaba350bc49cecd5e4ef56e76b0a3f5c188be326",
+    "script_sha256": "fa0f29e70790a122f78ee584ad13f599a0d8992a776dd9f56d5377c3fe76cc88"
+  }
+}

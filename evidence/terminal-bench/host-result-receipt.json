@@ -1,0 +1,50 @@
+{
+  "attestation": {
+    "kind": "curated_private_source_commitment",
+    "public_can_recompute_raw_sha256": false,
+    "selected_fields_operator_attested": true
+  },
+  "public_index_sha256": "9b268f0dbf5dc55872793bfc0c63e5b78440b468bf7c27a8678191049619931b",
+  "raw_run_contract": {
+    "published": false,
+    "sha256": "e14b56e03f078887e6f9501a9b9eac50abb2e0d2e777a554f3939de4744674fe",
+    "withheld_reason": "Contains private absolute checkout, output, and ephemeral secret-mount paths. Selected non-sensitive pins are transcribed below."
+  },
+  "raw_source": {
+    "logical_name": "terminal-bench-result.json",
+    "published": false,
+    "sha256": "7279b1701561ae49ba6235740b5018d83f51ef6f0356c25374e17cb211ba7afa",
+    "withheld_reason": "The complete harness result embeds private local paths and links to withheld session material."
+  },
+  "record_type": "host_result_receipt",
+  "schema_version": 1,
+  "selected_contract_pins": {
+    "benchmark_runtime_tree_sha256": "83c9b1460265aff2fd8ec2b07acb8413235949bad82d800855b9b95366fb56d4",
+    "codex_version": "0.145.0-alpha.18",
+    "dataset_source_commit": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+    "harness_commit": "459ff6ec99417589b7f679d14ddf3b3f0ae4f1dc",
+    "harness_version": "0.20.0",
+    "image_digest": "sha256:61e431c00c58df652287aadce5457634d9f9330cfdd153ebdf2802df0d540119",
+    "model": "openai/gpt-5.6-sol",
+    "plugin_tree_sha256": "d32f79e0c866fd7739c530469816ed49538fc79e0397e0e30c94e1d837a25b9d",
+    "reasoning_effort": "xhigh",
+    "runner_sha256": "6f7b62c41f296852014bb86bac77adef4210cbfb943e3afb0fc133711bbd4519",
+    "validator_sha256": "f47519838ed0d2299ad4e1ba89a27b1ca2da4c7795808a5cf872b6b4089eff1d"
+  },
+  "selected_result_fields": {
+    "agent": {
+      "cache_tokens": 951808,
+      "cost_usd": 1.410944,
+      "input_tokens": 1028716,
+      "model": "openai/gpt-5.6-sol",
+      "output_tokens": 18350
+    },
+    "exception_info": null,
+    "finished_at": "2026-07-20T04:31:36.925438Z",
+    "reward": 1.0,
+    "started_at": "2026-07-20T04:18:58.718385Z",
+    "task_checksum": "e17451b4a53685be804467ab24e53c4f5816bf6a972ff6434ec20cc7d246048e",
+    "task_name": "terminal-bench/fix-git",
+    "trial_name": "fix-git__3aycCKX"
+  }
+}

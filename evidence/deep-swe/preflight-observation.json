@@ -1,0 +1,27 @@
+{
+  "attestation": {
+    "kind": "curated_private_source_observation",
+    "public_can_recompute_private_source_sha256": false,
+    "selected_fields_operator_attested": true
+  },
+  "observed_failure": {
+    "command_records": 12,
+    "exit_records": 12,
+    "hard_character_limit": 12000,
+    "message": "Preflight failed its hard bound: 25,050 characters exceeded the 12,000-character limit. Per your instruction, I stopped before fusion and made no branch, file changes, test runs, or commits.",
+    "observed_characters": 25050,
+    "stage": "preflight_before_fusion"
+  },
+  "private_source_commitments": {
+    "codex_transcript_sha256": "9e9617e4cd0c1c5f24eff4fe808c57e04e4ed7549e14a6c196d9953a28efe0e4",
+    "trajectory_sha256": "29e63970254518c5e2bc1fe586f9f8a7902f06aa5355ee952f8e41a4c97d678b"
+  },
+  "public_consequences": {
+    "fusion_runs_in_public_index": 0,
+    "relentless_inception_external_calls": 0,
+    "task_mutation_authorized_by_fusion": false
+  },
+  "record_type": "preflight_observation",
+  "schema_version": 1,
+  "withheld_reason": "The full Codex transcript and trajectory contain private workspace content, absolute paths, and unrelated repository material."
+}

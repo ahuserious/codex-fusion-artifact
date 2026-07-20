@@ -25,8 +25,8 @@ Task reward and Relentless Inception gate acceptance are separate results. A rew
 
 - [`evidence/campaign-summary.json`](evidence/campaign-summary.json) is the machine-readable campaign index.
 - [`evidence/runs/codex-0144-frontier-smoke-001/`](evidence/runs/codex-0144-frontier-smoke-001/) contains the exact publishable run artifacts and response-receipt chain. The local `result.json` and lock were excluded.
-- [`evidence/terminal-bench/`](evidence/terminal-bench/) contains safe verifier outputs plus manifest/ledger evidence from the historical trace.
-- [`evidence/deep-swe/`](evidence/deep-swe/) contains the negative verifier result and a curated explanation.
+- [`evidence/terminal-bench/`](evidence/terminal-bench/) contains safe verifier outputs, provider ledgers, a curated host-result commitment, and the observed current-validator rejection.
+- [`evidence/deep-swe/`](evidence/deep-swe/) contains the negative verifier result, a curated host-result commitment, and the bounded-preflight observation.
 - [`jigs/`](jigs/) contains opt-in, billable reproduction wrappers and the pinned source snapshot.
 - [`docs/FINDINGS.md`](docs/FINDINGS.md), [`docs/METHODOLOGY.md`](docs/METHODOLOGY.md), and [`LIMITATIONS.md`](LIMITATIONS.md) separate observation, method, and claim boundaries.
 - [`manifests/artifact-manifest.json`](manifests/artifact-manifest.json) and [`checksums/SHA256SUMS`](checksums/SHA256SUMS) bind every published payload file.
@@ -38,7 +38,9 @@ python3 scripts/verify_artifact.py
 python3 analysis/report.py
 ```
 
-The verifier checks every manifest hash, JSON parse, expected campaign invariants, accidental private paths, and common credential/token shapes. CI runs the same checks. Live jigs require an explicit `--execute` flag and can incur provider and Codex usage.
+The verifier recomputes every live invocation/attempt/response/entry receipt, synthesis and gate hash, token and cost aggregate, handoff hash, harness cross-link, manifest hash, and selected-cost total. It also scans for private paths, populated secret fields, and common/high-entropy credential shapes. Mutation tests refresh the checksums after deliberate tampering and confirm the semantic verifier still fails closed. CI runs all three checks. Live jigs require an explicit `--execute` flag and can incur provider and Codex usage.
+
+The two host costs are not independently recomputable from public raw result files: those files were withheld because they embed private paths and session links. Their selected non-sensitive fields are operator-attested in SHA-256-bound curated receipts. Provider-ledger costs and public reward files remain directly recomputable from this repository.
 
 ## License status
 

@@ -18,8 +18,20 @@ def main() -> int:
     print("runs:")
     for run in data["runs"]:
         outcome = run.get("status", "unknown")
-        cost = run.get("known_cost_usd", run.get("host_cost_usd", "n/a"))
-        print(f"- {run['id']}: {outcome}; reported cost={cost}")
+        cost_components = []
+        if "known_cost_usd" in run:
+            cost_components.append(f"provider=${run['known_cost_usd']:.8f}")
+        if "external_known_cost_usd" in run:
+            cost_components.append(f"external=${run['external_known_cost_usd']:.8f}")
+        if "host_cost_usd" in run:
+            cost_components.append(f"host=${run['host_cost_usd']:.8f}")
+        rendered_cost = ", ".join(cost_components) if cost_components else "no retained cost"
+        print(f"- {run['id']}: {outcome}; {rendered_cost}")
+    print(
+        "selected receipt total: "
+        f"${data['selected_receipts_known_cost_usd']:.8f}; "
+        "not complete campaign spend"
+    )
     return 0
 
 

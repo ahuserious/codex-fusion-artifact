@@ -16,4 +16,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 scripts/verify_artifact.py
+      - run: python3 -m unittest discover -s tests -v
       - run: python3 analysis/report.py
