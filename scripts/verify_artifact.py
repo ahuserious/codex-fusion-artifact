@@ -43,7 +43,9 @@ PRIVATE_PATH_PATTERNS = {
     "linux_user_path": re.compile(rb"(?:file://)?/home/[A-Za-z0-9._-]+/"),
     "macos_ephemeral_path": re.compile(rb"/(?:private/)?var/folders/"),
     "windows_user_path": re.compile(rb"[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s]+[\\/]", re.I),
-    "known_private_identity": re.compile(rb"\bDanBot\b", re.I),
+    # Build this private identity from fragments so the scanner can inspect its
+    # own source without whitelisting the verifier file.
+    "known_private_identity": re.compile(b"\\b" + b"Dan" + b"Bot" + b"\\b", re.I),
 }
 URLSAFE_TOKEN_CANDIDATE = re.compile(
     rb"(?<![A-Za-z0-9_-])([A-Za-z0-9_-]{48,})(?![A-Za-z0-9_-])"
@@ -71,6 +73,23 @@ COUNTER_FIELDS = (
     "cached_tokens",
     "tool_calls",
 )
+LIVE_CALL_TOPOLOGY = {
+    0: ("panel", "grok45_researcher", "structured_response"),
+    1: ("panel", "grok45_adversary", "structured_response"),
+    2: ("panel", "grok45_constraint_auditor", "structured_response"),
+    3: ("judge", "grok45_judge", "fusion_judgment"),
+    4: ("synthesis", "grok45_synthesizer", "structured_response"),
+    5: ("gate", "grok45_verifier", "adversarial_verdict"),
+    6: ("gate", "grok45_constraint_auditor", "adversarial_verdict"),
+    7: ("amendment-1", "grok45_synthesizer", "structured_response"),
+    8: ("gate-1", "grok45_verifier", "adversarial_verdict"),
+    9: ("gate-1", "grok45_constraint_auditor", "adversarial_verdict"),
+}
+PANEL_RESULT_SEATS = {
+    "Seat A": "grok45_adversary",
+    "Seat B": "grok45_constraint_auditor",
+    "Seat C": "grok45_researcher",
+}
 
 
 def _strict_json_loads(content: str | bytes) -> Any:
@@ -234,23 +253,20 @@ def scan_payloads(paths: list[Path]) -> list[str]:
     for path in paths:
         content = path.read_bytes()
         relative = path.relative_to(ROOT).as_posix()
-        # This file necessarily contains the detector expressions. Test code
-        # constructs mutation fixtures from pieces for the same reason.
-        if relative != "scripts/verify_artifact.py":
-            for name, pattern in PRIVATE_PATH_PATTERNS.items():
-                if pattern.search(content):
-                    failures.append(f"{relative}: private path/identity pattern {name}")
-            for name, pattern in SECRET_PATTERNS.items():
-                if pattern.search(content):
-                    failures.append(f"{relative}: credential pattern {name}")
-            for candidate in URLSAFE_TOKEN_CANDIDATE.findall(content):
-                if _looks_like_credential_token(candidate):
-                    failures.append(f"{relative}: long urlsafe credential-like token")
-                    break
-            for candidate in BASE64_TOKEN_CANDIDATE.findall(content):
-                if _looks_like_credential_token(candidate):
-                    failures.append(f"{relative}: long base64 credential-like token")
-                    break
+        for name, pattern in PRIVATE_PATH_PATTERNS.items():
+            if pattern.search(content):
+                failures.append(f"{relative}: private path/identity pattern {name}")
+        for name, pattern in SECRET_PATTERNS.items():
+            if pattern.search(content):
+                failures.append(f"{relative}: credential pattern {name}")
+        for candidate in URLSAFE_TOKEN_CANDIDATE.findall(content):
+            if _looks_like_credential_token(candidate):
+                failures.append(f"{relative}: long urlsafe credential-like token")
+                break
+        for candidate in BASE64_TOKEN_CANDIDATE.findall(content):
+            if _looks_like_credential_token(candidate):
+                failures.append(f"{relative}: long base64 credential-like token")
+                break
         if path.suffix == ".json":
             try:
                 parsed = _strict_json_loads(content)
@@ -319,8 +335,11 @@ def verify_ledger(
 ) -> dict[str, Any]:
     facts: dict[str, Any] = {
         "entries_by_id": {},
+        "invocations_by_id": {},
         "responses_by_id": {},
         "models": {},
+        "providers": {},
+        "requested_models": {},
         "known_cost_usd": 0.0,
         "counters": {counter: 0 for counter in COUNTER_FIELDS},
     }
@@ -445,6 +464,14 @@ def verify_ledger(
         model = entry.get("actual_model")
         if isinstance(model, str):
             facts["models"][model] = facts["models"].get(model, 0) + 1
+        requested_model = entry.get("requested_model")
+        if isinstance(requested_model, str):
+            facts["requested_models"][requested_model] = (
+                facts["requested_models"].get(requested_model, 0) + 1
+            )
+        provider_name = entry.get("provider")
+        if isinstance(provider_name, str):
+            facts["providers"][provider_name] = facts["providers"].get(provider_name, 0) + 1
         if isinstance(entry_id, str):
             facts["entries_by_id"][entry_id] = entry
 
@@ -480,6 +507,7 @@ def verify_ledger(
             ):
                 if expected is not None and invocation.get(field) != expected:
                     failures.append(f"{label}: {response_artifact} invocation field {field} drifted")
+            facts["invocations_by_id"][entry_id] = invocation
         if isinstance(response, dict):
             for field in (
                 "actual_model",
@@ -531,6 +559,12 @@ def verify_embedded_response(
     label: str,
     live_facts: dict[str, Any],
     failures: list[str],
+    *,
+    expected_stage: str,
+    expected_seat: str | None = None,
+    outer_seat_field: str | None = None,
+    expected_role: str | None = None,
+    expected_keys: set[str] | None = None,
 ) -> str | None:
     if not isinstance(value, dict):
         failures.append(f"{label}: embedded response record is not an object")
@@ -542,14 +576,33 @@ def verify_embedded_response(
         return None
     entry_id = evidence.get("entry_id")
     entry = live_facts["entries_by_id"].get(entry_id)
+    invocation = live_facts["invocations_by_id"].get(entry_id)
     response = live_facts["responses_by_id"].get(entry_id)
-    if not isinstance(entry, dict) or not isinstance(response, dict):
+    if not isinstance(entry, dict) or not isinstance(invocation, dict) or not isinstance(response, dict):
         failures.append(f"{label}: response_evidence does not resolve to the live ledger")
         return None
+    if expected_keys is not None and set(value) != expected_keys:
+        failures.append(f"{label}: outer record fields drifted")
     if evidence != _receipt_from_entry(entry):
         failures.append(f"{label}: response_evidence receipt fields drifted")
     if embedded_response != response:
         failures.append(f"{label}: embedded response differs from raw receipt artifact")
+    if entry.get("stage") != expected_stage or invocation.get("stage") != expected_stage:
+        failures.append(f"{label}: outer record resolves to the wrong invocation stage")
+    receipt_seat = entry.get("seat")
+    if invocation.get("seat_name") != receipt_seat:
+        failures.append(f"{label}: invocation seat differs from the ledger seat")
+    if expected_seat is not None and receipt_seat != expected_seat:
+        failures.append(f"{label}: receipt resolves to an unexpected seat")
+    if outer_seat_field is not None and value.get(outer_seat_field) != receipt_seat:
+        failures.append(f"{label}: outer {outer_seat_field} is not bound to the receipt seat")
+    for seat_field in ("seat_name", "author_seat"):
+        if seat_field in value and value.get(seat_field) != receipt_seat:
+            failures.append(f"{label}: outer {seat_field} differs from the receipt seat")
+    if expected_role is not None and value.get("role") != expected_role:
+        failures.append(f"{label}: outer role is not bound to the invocation stage")
+    if "status" in value and value.get("status") != response.get("raw_status"):
+        failures.append(f"{label}: outer status differs from the receipt response")
     return str(entry_id)
 
 
@@ -574,12 +627,18 @@ def verify_gate(
         return referenced
     observed_passes = 0
     negative_seats: set[str] = set()
+    expected_negative_verdicts: list[dict[str, Any]] = []
+    expected_reviewer_seats = {"grok45_verifier", "grok45_constraint_auditor"}
+    observed_reviewer_seats: set[str] = set()
     for index, reviewer in enumerate(reviewers):
         entry_id = verify_embedded_response(
             reviewer,
             f"{label}.reviewers[{index}]",
             live_facts,
             failures,
+            expected_stage="gate" if label == "gate-0" else "gate-1",
+            outer_seat_field="seat_name",
+            expected_keys={"response", "response_evidence", "seat_name", "status", "verdict"},
         )
         if entry_id:
             referenced.add(entry_id)
@@ -592,7 +651,19 @@ def verify_gate(
         if verdict.get("verdict") == "PASS":
             observed_passes += 1
         else:
-            negative_seats.add(str(reviewer.get("seat_name")))
+            reviewer_seat = str(reviewer.get("seat_name"))
+            negative_seats.add(reviewer_seat)
+            expected_negative_verdicts.append(
+                {
+                    "blocking_findings": verdict.get("blocking_findings"),
+                    "evidence": verdict.get("evidence"),
+                    "required_actions": verdict.get("required_actions"),
+                    "seat_name": reviewer_seat,
+                    "summary": verdict.get("summary"),
+                    "verdict": verdict.get("verdict"),
+                }
+            )
+        observed_reviewer_seats.add(str(reviewer.get("seat_name")))
         response = reviewer.get("response")
         if isinstance(response, dict):
             try:
@@ -604,24 +675,83 @@ def verify_gate(
                     failures.append(f"{label}: reviewer {index} parsed verdict drifted")
     if gate.get("required_passes") != 2:
         failures.append(f"{label}: required_passes is not 2")
+    if observed_reviewer_seats != expected_reviewer_seats:
+        failures.append(f"{label}: reviewer seat topology drifted")
     if gate.get("pass_count") != observed_passes or observed_passes != expected_pass_count:
         failures.append(f"{label}: pass count does not match reviewer verdicts")
     if gate.get("passed") is not expected_passed:
         failures.append(f"{label}: passed state drifted")
     if gate.get("negative_verdict_blocked") is not bool(negative_seats):
         failures.append(f"{label}: negative-verdict blocker state is inconsistent")
-    published_negative_seats = {
-        str(verdict.get("seat_name"))
-        for verdict in gate.get("negative_verdicts", [])
-        if isinstance(verdict, dict)
-    }
-    if published_negative_seats != negative_seats:
-        failures.append(f"{label}: negative verdict list is inconsistent")
+    if gate.get("negative_verdicts") != expected_negative_verdicts:
+        failures.append(f"{label}: negative verdict records are not bound to reviewer results")
     if expected_passed and gate.get("deterministic_blockers") != []:
         failures.append(f"{label}: passing gate retained deterministic blockers")
     if not expected_passed and not gate.get("deterministic_blockers"):
         failures.append(f"{label}: rejected gate lost its deterministic blocker")
     return referenced
+
+
+def verify_live_topology(
+    ledger: Any,
+    live_facts: dict[str, Any],
+    failures: list[str],
+) -> None:
+    """Bind the immutable smoke to its intended model/provider/role topology."""
+
+    if not isinstance(ledger, dict) or not isinstance(ledger.get("entries"), list):
+        failures.append("live topology cannot resolve ledger entries")
+        return
+    entries_by_attempt = {
+        entry.get("attempt_index"): entry
+        for entry in ledger["entries"]
+        if isinstance(entry, dict)
+    }
+    if set(entries_by_attempt) != set(LIVE_CALL_TOPOLOGY):
+        failures.append("live topology does not contain exactly attempts 0 through 9")
+        return
+    request_ids: set[str] = set()
+    for attempt_index, (expected_stage, expected_seat, expected_schema) in LIVE_CALL_TOPOLOGY.items():
+        entry = entries_by_attempt[attempt_index]
+        entry_id = entry.get("entry_id")
+        invocation = live_facts["invocations_by_id"].get(entry_id)
+        if (
+            entry.get("stage") != expected_stage
+            or entry.get("seat") != expected_seat
+            or not isinstance(invocation, dict)
+            or invocation.get("stage") != expected_stage
+            or invocation.get("seat_name") != expected_seat
+            or invocation.get("schema_name") != expected_schema
+        ):
+            failures.append(f"live topology attempt {attempt_index} stage/seat/schema drifted")
+        if (
+            entry.get("provider") != "xai_direct"
+            or entry.get("requested_model") != "grok-4.5"
+            or entry.get("actual_model") != "grok-4.5"
+            or entry.get("route") != {}
+            or entry.get("raw_status") != "completed"
+        ):
+            failures.append(f"live topology attempt {attempt_index} provider/model/route drifted")
+        request_id = entry.get("request_id")
+        if not isinstance(request_id, str) or not request_id or request_id in request_ids:
+            failures.append(f"live topology attempt {attempt_index} request ID is missing or reused")
+        else:
+            request_ids.add(request_id)
+        usage = entry.get("usage")
+        if not isinstance(usage, dict) or (
+            usage.get("unknown_cost_fail_closed") is not False
+            or usage.get("input_output_usage_complete") is not True
+            or usage.get("raw_usage_invalid") is not False
+            or usage.get("accounting_error") is not None
+            or usage.get("tool_calls") != 0
+        ):
+            failures.append(f"live topology attempt {attempt_index} usage-integrity state drifted")
+    if live_facts.get("providers") != {"xai_direct": 10}:
+        failures.append("live provider topology is not ten direct-xAI calls")
+    if live_facts.get("requested_models") != {"grok-4.5": 10}:
+        failures.append("live requested-model topology is not ten exact Grok 4.5 calls")
+    if live_facts.get("models") != {"grok-4.5": 10}:
+        failures.append("live actual-model topology is not ten exact Grok 4.5 calls")
 
 
 def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, Any]:
@@ -636,6 +766,7 @@ def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, A
         response_root=live_root,
         manifest=manifest if isinstance(manifest, dict) else {},
     )
+    verify_live_topology(ledger, live_facts, failures)
     if not isinstance(manifest, dict):
         return live_facts
     if manifest.get("run_id") != run_id or manifest.get("status") != "completed":
@@ -678,20 +809,88 @@ def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, A
             or panel.get("degraded") is not False
         ):
             failures.append("live panel completion counters drifted")
+        attempt_entry_ids: list[str] = []
+        if not isinstance(attempts, list) or len(attempts) != 3:
+            failures.append("live panel attempts are incomplete")
         else:
+            for index, attempt in enumerate(attempts):
+                expected_seat = LIVE_CALL_TOPOLOGY[index][1]
+                entry_id = verify_embedded_response(
+                    attempt,
+                    f"panel.attempts[{index}]",
+                    live_facts,
+                    failures,
+                    expected_stage="panel",
+                    expected_seat=expected_seat,
+                    outer_seat_field="seat_name",
+                    expected_role="panel",
+                    expected_keys={
+                        "anonymous_label",
+                        "error",
+                        "response",
+                        "response_evidence",
+                        "role",
+                        "seat_name",
+                        "status",
+                    },
+                )
+                if entry_id:
+                    attempt_entry_ids.append(entry_id)
+                    entry = live_facts["entries_by_id"].get(entry_id, {})
+                    if entry.get("attempt_index") != index:
+                        failures.append(f"panel.attempts[{index}]: receipt order drifted")
+                if not isinstance(attempt, dict) or (
+                    attempt.get("anonymous_label") != ""
+                    or attempt.get("error") is not None
+                ):
+                    failures.append(f"panel.attempts[{index}]: completion wrapper drifted")
+
+        result_entry_ids: list[str] = []
+        observed_labels: set[str] = set()
+        if isinstance(results, list) and len(results) == 3:
             for index, result in enumerate(results):
+                label = result.get("anonymous_label") if isinstance(result, dict) else None
+                expected_seat = PANEL_RESULT_SEATS.get(str(label))
                 entry_id = verify_embedded_response(
                     result,
                     f"panel.results[{index}]",
                     live_facts,
                     failures,
+                    expected_stage="panel",
+                    expected_seat=expected_seat,
+                    outer_seat_field="seat_name",
+                    expected_role="panel",
+                    expected_keys={
+                        "anonymous_label",
+                        "error",
+                        "response",
+                        "response_evidence",
+                        "role",
+                        "seat_name",
+                        "status",
+                    },
                 )
                 if entry_id:
+                    result_entry_ids.append(entry_id)
                     referenced.add(entry_id)
-        if not isinstance(attempts, list) or len(attempts) != 3:
-            failures.append("live panel attempts are incomplete")
+                if isinstance(label, str):
+                    observed_labels.add(label)
+                if not isinstance(result, dict) or result.get("error") is not None:
+                    failures.append(f"panel.results[{index}]: completion wrapper drifted")
+        if observed_labels != set(PANEL_RESULT_SEATS):
+            failures.append("live panel anonymous-label topology drifted")
+        if len(set(attempt_entry_ids)) != 3 or set(attempt_entry_ids) != set(result_entry_ids):
+            failures.append("live panel attempts/results do not bind the same three receipts")
 
-    judge_entry = verify_embedded_response(judge, "judge", live_facts, failures)
+    judge_entry = verify_embedded_response(
+        judge,
+        "judge",
+        live_facts,
+        failures,
+        expected_stage="judge",
+        expected_seat="grok45_judge",
+        expected_keys={"judgment", "response", "response_evidence"},
+    )
     if judge_entry:
         referenced.add(judge_entry)
     if isinstance(judge, dict) and isinstance(judge.get("response"), dict):
@@ -703,7 +902,11 @@ def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, A
             if parsed_judgment != judge.get("judgment"):
                 failures.append("judge parsed judgment drifted")
 
-    def verify_synthesis(value: Any, label: str) -> tuple[str, str | None]:
+    def verify_synthesis(
+        value: Any,
+        label: str,
+        expected_stage: str,
+    ) -> tuple[str, str | None]:
         if not isinstance(value, dict) or not isinstance(value.get("text"), str):
             failures.append(f"{label}: synthesis text is missing")
             return "", None
@@ -712,10 +915,28 @@ def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, A
             failures.append(f"{label}: text SHA-256 mismatch")
         if not isinstance(value.get("response"), dict) or value["response"].get("text") != value["text"]:
             failures.append(f"{label}: normalized response text differs from synthesis")
-        entry_id = verify_embedded_response(value, label, live_facts, failures)
+        entry_id = verify_embedded_response(
+            value,
+            label,
+            live_facts,
+            failures,
+            expected_stage=expected_stage,
+            expected_seat="grok45_synthesizer",
+            outer_seat_field="author_seat",
+            expected_keys={
+                "author_seat",
+                "mode",
+                "response",
+                "response_evidence",
+                "sha256",
+                "text",
+            },
+        )
+        if value.get("mode") != "client_orchestrated":
+            failures.append(f"{label}: synthesis mode drifted")
         return synthesis_hash, entry_id
 
-    synthesis_hash, synthesis_entry = verify_synthesis(synthesis, "synthesis")
+    synthesis_hash, synthesis_entry = verify_synthesis(synthesis, "synthesis", "synthesis")
     if synthesis_entry:
         referenced.add(synthesis_entry)
     gate_0_entries = verify_gate(
@@ -728,7 +949,11 @@ def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, A
         failures,
     )
     referenced.update(gate_0_entries)
-    amendment_hash, amendment_entry = verify_synthesis(amendment, "synthesis amendment")
+    amendment_hash, amendment_entry = verify_synthesis(
+        amendment,
+        "synthesis amendment",
+        "amendment-1",
+    )
     if amendment_entry:
         referenced.add(amendment_entry)
     gate_1_entries = verify_gate(
@@ -794,6 +1019,7 @@ def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, A
         if (
             live_summary.get("calls") != live_facts.get("calls")
             or live_summary.get("actual_models") != ["grok-4.5"]
+            or live_summary.get("requested_models") != ["grok-4.5"]
             or not _close(live_summary.get("known_cost_usd"), live_facts["known_cost_usd"])
             or live_summary.get("tokens") != expected_tokens
             or live_summary.get("unknown_cost_calls") != live_facts["unknown_cost_calls"]
@@ -808,6 +1034,8 @@ def verify_live_run(summary: dict[str, Any], failures: list[str]) -> dict[str, A
     if not isinstance(result_summary, dict) or (
         result_summary.get("calls") != live_facts.get("calls")
         or not _close(result_summary.get("known_cost_usd"), live_facts["known_cost_usd"])
+        or result_summary.get("model_provenance")
+        != {"actual": ["grok-4.5"], "requested": ["grok-4.5"]}
         or result_summary.get("tokens") != expected_tokens
         or result_summary.get("initial_gate") != {"status": "rejected", "pass": 1, "total": 2}
         or result_summary.get("final_gate") != {"status": "passed", "pass": 2, "total": 2}

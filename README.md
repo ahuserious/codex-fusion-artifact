@@ -38,7 +38,7 @@ python3 scripts/verify_artifact.py
 python3 analysis/report.py
 ```
 
-The verifier recomputes every live invocation/attempt/response/entry receipt, synthesis and gate hash, token and cost aggregate, handoff hash, harness cross-link, manifest hash, and selected-cost total. It also scans for private paths, populated secret fields, and common/high-entropy credential shapes. Mutation tests refresh the checksums after deliberate tampering and confirm the semantic verifier still fails closed. CI runs all three checks. Live jigs require an explicit `--execute` flag and can incur provider and Codex usage.
+The verifier recomputes every live invocation/attempt/response/entry receipt, binds both duplicated panel views and every outer seat/role to those receipts, enforces the exact ten-call direct-xAI/Grok-4.5 topology, and checks synthesis/gate hashes, aggregates, handoff hashes, harness cross-links, and selected costs. It scans every payload—including its own source—for private paths, populated secret fields, and common/high-entropy credential shapes. Checksum-neutral mutation tests cover coordinated receipt rewrites as well as simpler tampering. CI runs all three checks. Live jigs require an explicit `--execute` flag and can incur provider and Codex usage.
 
 The two host costs are not independently recomputable from public raw result files: those files were withheld because they embed private paths and session links. Their selected non-sensitive fields are operator-attested in SHA-256-bound curated receipts. Provider-ledger costs and public reward files remain directly recomputable from this repository.
 

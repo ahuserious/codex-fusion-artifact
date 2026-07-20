@@ -100,6 +100,106 @@ class SemanticMutationTests(unittest.TestCase):
         )
         self.assert_semantic_failure("pass count does not match reviewer verdicts")
 
+    def test_panel_attempt_duplicate_response_is_receipt_bound(self) -> None:
+        def mutate(value: dict[str, object]) -> None:
+            attempts = value["attempts"]
+            assert isinstance(attempts, list)
+            first_attempt = attempts[0]
+            assert isinstance(first_attempt, dict)
+            response = first_attempt["response"]
+            assert isinstance(response, dict)
+            response["text"] = str(response["text"]) + " coordinated mutation"
+
+        self.rewrite_json(
+            "evidence/runs/codex-0144-frontier-smoke-001/panel.json",
+            mutate,
+        )
+        self.assert_semantic_failure("embedded response differs from raw receipt artifact")
+
+    def test_panel_result_outer_seat_is_receipt_bound(self) -> None:
+        def mutate(value: dict[str, object]) -> None:
+            results = value["results"]
+            assert isinstance(results, list)
+            first_result = results[0]
+            assert isinstance(first_result, dict)
+            first_result["seat_name"] = "unbound_reviewer"
+
+        self.rewrite_json(
+            "evidence/runs/codex-0144-frontier-smoke-001/panel.json",
+            mutate,
+        )
+        self.assert_semantic_failure("outer seat_name is not bound to the receipt seat")
+
+    def test_panel_result_outer_role_is_invocation_bound(self) -> None:
+        def mutate(value: dict[str, object]) -> None:
+            results = value["results"]
+            assert isinstance(results, list)
+            first_result = results[0]
+            assert isinstance(first_result, dict)
+            first_result["role"] = "judge"
+
+        self.rewrite_json(
+            "evidence/runs/codex-0144-frontier-smoke-001/panel.json",
+            mutate,
+        )
+        self.assert_semantic_failure("outer role is not bound to the invocation stage")
+
+    def test_coordinated_model_receipt_rewrite_breaks_fixed_topology(self) -> None:
+        run_root = (
+            self.artifact_root
+            / "evidence"
+            / "runs"
+            / "codex-0144-frontier-smoke-001"
+        )
+        ledger_path = run_root / "ledger.json"
+        ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+        entry = next(item for item in ledger["entries"] if item["attempt_index"] == 0)
+        old_entry_id = entry["entry_id"]
+        response_path = run_root / entry["response_artifact"]
+        response_artifact = json.loads(response_path.read_text(encoding="utf-8"))
+
+        entry["requested_model"] = "grok-4.3"
+        entry["actual_model"] = "grok-4.3"
+        response_artifact["response"]["requested_model"] = "grok-4.3"
+        response_artifact["response"]["actual_model"] = "grok-4.3"
+        response_sha256 = VERIFIER.canonical_json_hash(response_artifact["response"])
+        new_entry_id = VERIFIER.call_receipt_entry_id(
+            entry["attempt_id"],
+            entry["invocation_sha256"],
+            response_sha256,
+        )
+        entry["response_sha256"] = response_sha256
+        entry["entry_id"] = new_entry_id
+        entry["response_artifact"] = f"responses/{new_entry_id}.json"
+        response_artifact["receipt"]["response_sha256"] = response_sha256
+        response_artifact["receipt"]["entry_id"] = new_entry_id
+        ledger_path.write_text(
+            json.dumps(ledger, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        new_response_path = response_path.with_name(f"{new_entry_id}.json")
+        new_response_path.write_text(
+            json.dumps(response_artifact, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        response_path.unlink()
+
+        panel_path = run_root / "panel.json"
+        panel = json.loads(panel_path.read_text(encoding="utf-8"))
+        for collection_name in ("attempts", "results"):
+            for record in panel[collection_name]:
+                if record["response_evidence"]["entry_id"] != old_entry_id:
+                    continue
+                record["response"]["requested_model"] = "grok-4.3"
+                record["response"]["actual_model"] = "grok-4.3"
+                record["response_evidence"]["response_sha256"] = response_sha256
+                record["response_evidence"]["entry_id"] = new_entry_id
+        panel_path.write_text(
+            json.dumps(panel, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        self.assert_semantic_failure("provider/model/route drifted")
+
     def test_curated_host_cost_mutation_breaks_cross_link(self) -> None:
         def mutate(value: dict[str, object]) -> None:
             selected = value["selected_result_fields"]
@@ -118,6 +218,13 @@ class SemanticMutationTests(unittest.TestCase):
             encoding="utf-8",
         )
         self.assert_semantic_failure("credential-like token")
+
+    def test_verifier_source_is_included_in_credential_scan(self) -> None:
+        credential = "xai-" + ("Aa9_" * 8)
+        verifier_path = self.artifact_root / "scripts" / "verify_artifact.py"
+        with verifier_path.open("a", encoding="utf-8") as handle:
+            handle.write("\n# accidental value: " + credential + "\n")
+        self.assert_semantic_failure("credential pattern xai_key")
 
     def test_private_user_path_is_rejected_after_rehash(self) -> None:
         private_path = "/" + "Users" + "/private-person/work/result.json"

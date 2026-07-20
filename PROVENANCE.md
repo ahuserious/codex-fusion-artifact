@@ -25,7 +25,7 @@ The equal source/cache tree hashes were computed over relative path, executable 
 
 The published run omits `.run.lock` and `result.json`; the latter contained only an absolute local artifact-directory path beyond the already published semantic artifacts. All response receipts referenced by the ledger are retained.
 
-The offline verifier recomputes the canonical invocation hash, attempt ID, normalized response hash, entry ID, embedded receipt links, synthesis text hashes, both gate vote counts, and the final handoff payload/contract hashes. This is stronger than checking the copied files against a freshly generated checksum list.
+The offline verifier recomputes the canonical invocation hash, attempt ID, normalized response hash, entry ID, every duplicated panel/outer-seat link, the exact stage/seat/provider/model topology, synthesis text hashes, both gate vote counts, and the final handoff payload/contract hashes. This is stronger than checking the copied files against a freshly generated checksum list.
 
 ## Terminal-Bench trace
 
